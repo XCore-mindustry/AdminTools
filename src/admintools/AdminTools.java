@@ -1,12 +1,12 @@
 package admintools;
 
-import mindustry.Vars;
 import mindustry.mod.*;
+
+import static mindustry.Vars.netClient;
 
 public class AdminTools extends Mod {
     @Override
     public void init() {
-        Vars.ui.listfrag = new CustomPlayerListFragment();
-        Vars.ui.listfrag.build(Vars.ui.hudGroup);
+        netClient.addPacketHandler("give_ban_data", content -> new BanDialog(content).show());
     }
 }

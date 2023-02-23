@@ -3,10 +3,9 @@ package admintools;
 import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Table;
 
-import arc.util.Strings;
+import arc.util.Log;
+import arc.util.serialization.*;
 import mindustry.gen.Call;
-import mindustry.gen.Player;
-import mindustry.net.Packets;
 import mindustry.ui.dialogs.BaseDialog;
 
 public class BanDialog extends BaseDialog {
@@ -14,20 +13,24 @@ public class BanDialog extends BaseDialog {
     public String reason;
     public String banTime = "0";
 
-    public BanDialog(Player user) {
+    public BanDialog(String content) {
         super("ban");
+        Log.info(content);
+        JsonValue json = new JsonReader().parse(content);
+
+        String name = json.get("name").asString();
 
         closeOnBack();
         shown(() -> {
             cont.clear();
             Table table = new Table();
-            table.add(user.name);
+            table.add(name);
             table.row();
-            table.add("Причина: ").padRight(8f);
+            table.add("Reason: ").padRight(8f);
             table.defaults().height(60f).padTop(8);
             table.field(null, value -> reason = value);
             table.row();
-            table.add("Дни бана: ").padRight(8f);
+            table.add("Ban duration(in days): ").padRight(8f);
             table.field(null, TextField.TextFieldFilter.digitsOnly, value -> banTime = value);
             table.row();
             cont.row();
@@ -36,11 +39,15 @@ public class BanDialog extends BaseDialog {
         buttons.defaults().size(200f, 50f);
         buttons.button("@cancel", this::hide);
         buttons.button("@ok", () -> {
-            Call.sendChatMessage(Strings.format("/ban @ @ @", user.id, banTime, reason));
+            json.get("reason").set(reason);
+            json.get("duration").set(banTime);
+            Call.serverPacketReliable("take_ban_data", json.toJson(JsonWriter.OutputType.json));
             hide();
         });
-        buttons.button("Бан навсегда", () -> {
-            Call.adminRequest(user, Packets.AdminAction.ban);
+        buttons.button("Skip to discord", () -> {
+            json.get("skip_to_discord").set(true);
+
+            Call.serverPacketReliable("take_ban_data", json.toJson(JsonWriter.OutputType.json));
             hide();
         });
     }
