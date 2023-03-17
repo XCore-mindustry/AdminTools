@@ -13,6 +13,8 @@ public class BanDialog extends BaseDialog {
     public String reason;
     public String banTime = "0";
 
+    boolean global = false;
+
     public BanDialog(String content) {
         super("ban");
         Log.info(content);
@@ -33,6 +35,8 @@ public class BanDialog extends BaseDialog {
             table.add("Ban duration(in days): ").padRight(8f);
             table.field(null, TextField.TextFieldFilter.digitsOnly, value -> banTime = value);
             table.row();
+            table.check("Global Ban", g  -> global = g);
+            table.row();
             cont.row();
             cont.add(table);
         });
@@ -41,6 +45,7 @@ public class BanDialog extends BaseDialog {
         buttons.button("@ok", () -> {
             json.get("reason").set(reason);
             json.get("duration").set(banTime);
+            json.get("global").set(global);
             Call.serverPacketReliable("take_ban_data", json.toJson(JsonWriter.OutputType.json));
             hide();
         });
