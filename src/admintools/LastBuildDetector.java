@@ -7,6 +7,7 @@ import arc.util.Log;
 import arc.util.Strings;
 import mindustry.game.EventType;
 import mindustry.ui.Styles;
+import mindustry.world.blocks.ConstructBlock;
 
 public class LastBuildDetector {
 
@@ -32,8 +33,6 @@ public class LastBuildDetector {
         }
 
         updateText();
-
-        Log.info("\n"+info);
     }
 
     public static void init() {
@@ -45,8 +44,14 @@ public class LastBuildDetector {
             if (!e.unit.isPlayer()) {
                 return;
             }
-            Log.info(e.unit.getPlayer().name+" "+e.breaking+" "+e.tile.block().name);
-            append(new Data(e.unit.getPlayer().name, e.tile.block(), e.breaking, 1));
+
+            var nya = e.tile.block();
+
+            if (e.breaking && e.tile.build instanceof ConstructBlock.ConstructBuild cons) {
+                nya = cons.current;
+            }
+
+            append(new Data(e.unit.getPlayer().name, nya, e.breaking, 1));
         });
     }
 
