@@ -71,7 +71,9 @@ public class CarmaDetector {
                     Call.adminRequest(user, Packets.AdminAction.ban);
                 }
             }));
-            table.labelWrap(LastBuildDetector.format(Strings.stripColors(nya.name), 20) + " | " + nya.value);
+            table.add(nya.name);
+            table.add("|");
+            table.add(nya.value+"");
         }
     }
 
