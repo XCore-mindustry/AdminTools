@@ -2,8 +2,13 @@ package admintools;
 
 import arc.Core;
 import arc.Events;
+import arc.scene.Element;
 import arc.scene.event.Touchable;
+import arc.scene.ui.Button;
+import arc.scene.ui.ImageButton;
+import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.WidgetGroup;
+import arc.struct.Seq;
 import arc.util.Align;
 import arc.util.Time;
 import mindustry.Vars;
@@ -26,6 +31,10 @@ public class AdminTools extends Mod {
     public static TravelerFragment travelerFragment;
     public static final DateTimeFormatter shortDateFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withZone(ZoneOffset.UTC);
 
+    public static final Seq<Cell<ImageButton>> buttons = new Seq<>();
+
+    public static boolean visible = true;
+
     @Override
     public void init() {
         netClient.addPacketHandler("give_ban_data", content -> new BanDialog(content).show());
@@ -46,13 +55,18 @@ public class AdminTools extends Mod {
             Core.scene.add(group);
 
             travelerFragment = new TravelerFragment();
-            travelerFragment.button(Icon.eyeSmall, Styles.defaulti, () -> {
+            travelerFragment.button(Icon.eyeOffSmall, Styles.defaulti,()->{
+                visible = !visible;
+                buttons.each(b->b.visible(visible));
+                travelerFragment.updateVisibility();
+            });
+            buttons.add(travelerFragment.button(Icon.eyeSmall, Styles.defaulti, () -> {
                 actionsLog.visible = !actionsLog.visible;
                 carmaInfo.visible = actionsLog.visible;
                 carmaInfo.updateVisibility();
                 actionsLog.updateVisibility();
-            }).uniformX().uniformY().fill();
-            travelerFragment.button(Icon.settingsSmall, Styles.defaulti, () -> {
+            }).uniformX().uniformY().fill());
+            buttons.add(travelerFragment.button(Icon.settingsSmall, Styles.defaulti, () -> {
                 Core.settings.put("travelerx", travelerFragment.x / group.getWidth());
                 Core.settings.put("actionx", actionsLog.x / group.getWidth());
                 Core.settings.put("carmax", carmaInfo.x / group.getWidth());
@@ -62,18 +76,18 @@ public class AdminTools extends Mod {
                 Core.settings.put("carmay", carmaInfo.y / group.getHeight());
                 Core.settings.put("historyy", historyBF.y / group.getHeight());
                 Core.settings.saveValues();
-            }).uniformX().uniformY().fill();
-            travelerFragment.button(Icon.zoomSmall, Styles.defaulti, () -> {
+            }).uniformX().uniformY().fill());
+            buttons.add(travelerFragment.button(Icon.zoomSmall, Styles.defaulti, () -> {
                 historyBF.visible = !historyBF.visible;
                 historyBF.updateVisibility();
-            }).uniformX().uniformY().fill();
-            travelerFragment.button(Icon.adminSmall, Styles.defaulti, () -> new ConsoleFrameDialog("Пробиватор v277353HENTAI").show());
+            }).uniformX().uniformY().fill());
+            buttons.add(travelerFragment.button(Icon.adminSmall, Styles.defaulti, () -> new ConsoleFrameDialog("Пробиватор v277353HENTAI").show()));
             travelerFragment.row();
-            travelerFragment.button(Icon.modePvpSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6567)).uniformX().uniformY().fill();
-            travelerFragment.button(Icon.modeSurvivalSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6568)).uniformX().uniformY().fill();
-            travelerFragment.button(Icon.planetSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6569)).uniformX().uniformY().fill();
-            travelerFragment.button(Icon.modeAttackSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6570)).uniformX().uniformY().fill();
-            travelerFragment.button(Icon.starSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6572)).uniformX().uniformY().fill();
+            buttons.add(travelerFragment.button(Icon.modePvpSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6567)).uniformX().uniformY().fill());
+            buttons.add(travelerFragment.button(Icon.modeSurvivalSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6568)).uniformX().uniformY().fill());
+            buttons.add(travelerFragment.button(Icon.planetSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6569)).uniformX().uniformY().fill());
+            buttons.add(travelerFragment.button(Icon.modeAttackSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6570)).uniformX().uniformY().fill());
+            buttons.add(travelerFragment.button(Icon.starSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6572)).uniformX().uniformY().fill());
 
             actionsLog = new TravelerFragment();
             actionsLog.row();
