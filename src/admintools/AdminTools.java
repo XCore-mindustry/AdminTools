@@ -39,12 +39,14 @@ public class AdminTools extends Mod {
         netClient.addPacketHandler("give_ban_data", content -> new BanDialog(content).show());
 
         netClient.addPacketHandler("take_history_info", content -> {
+            if(Vars.mobile) return;
             HistoryFrame.TransportableHistoryStack nya = JsonIO.read(HistoryFrame.TransportableHistoryStack.class, content);
             if (nya == null) return;
             HistoryFrame.update(nya);
             // nya
         });
 
+        if(Vars.mobile) return;
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
             WidgetGroup group = new WidgetGroup();

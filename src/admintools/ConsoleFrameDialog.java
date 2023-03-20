@@ -1,16 +1,12 @@
 package admintools;
 
-import arc.graphics.Color;
 import arc.scene.ui.ScrollPane;
-import arc.scene.ui.TextButton;
 import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
-import mindustry.ui.Fonts;
-import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 
 public class ConsoleFrameDialog extends BaseDialog {
