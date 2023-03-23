@@ -1,5 +1,6 @@
 package admintools;
 
+import arc.Core;
 import arc.input.KeyCode;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
@@ -13,12 +14,17 @@ import mindustry.ui.Styles;
 
 public class TravelerFragment extends Table {
 
-    public static float draggedAlpha = 0.45f;
+    public static float draggedAlpha = 0.25f;
 
     public ImageButton dragger;
     public boolean isDragging = false;
 
-    public TravelerFragment() {
+    public boolean needSave = false;
+
+    public final String name;
+
+    public TravelerFragment(String name) {
+        this.name = name;
         dragger = new ImageButton(Icon.move, Styles.defaulti);
         add(dragger).uniformX().uniformY().fill();
 
@@ -42,11 +48,18 @@ public class TravelerFragment extends Table {
             @Override
             public void touchUp(InputEvent e, float x, float y, int pointer, KeyCode button) {
                 isDragging = false;
+                needSave = true;
             }
 
         });
 
         update(() -> {
+            if (needSave) {
+                needSave = false;
+                Core.settings.put(name + "_x", this.x / UIController.container.getWidth());
+                Core.settings.put(name + "_y", this.y / UIController.container.getHeight());
+                Core.settings.saveValues();
+            }
             color.a = isDragging ? draggedAlpha : 1f;
 
             Vec2 pos = localToParentCoordinates(Tmp.v1.set(0, 0));

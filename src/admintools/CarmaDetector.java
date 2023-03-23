@@ -2,12 +2,9 @@ package admintools;
 
 import arc.Core;
 import arc.Events;
-import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Log;
-import arc.util.Strings;
 import mindustry.game.EventType;
 import mindustry.gen.Call;
 import mindustry.gen.Groups;
