@@ -8,9 +8,6 @@ import arc.scene.ui.ScrollPane;
 import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
-import arc.util.serialization.JsonReader;
-import arc.util.serialization.JsonValue;
 import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.gen.Call;
@@ -40,7 +37,7 @@ public class ConsoleFrameDialog extends BaseDialog {
     public ScrollPane panel1, panel2;
 
     public ConsoleFrameDialog() {
-        super("Hentai checker v277353");
+        super("Console");
 
         updateBanned(banned);
 
@@ -84,7 +81,7 @@ public class ConsoleFrameDialog extends BaseDialog {
         cont.row();
 
         if (Vars.net.client()) {
-            Call.serverPacketReliable("bans_request", "HENTAI");
+            Call.serverPacketReliable("bans_request", "");
         }
     }
     public static void init() {
@@ -100,9 +97,7 @@ public class ConsoleFrameDialog extends BaseDialog {
             @Override
             public boolean keyTyped(InputEvent event, char character) {
                 if (searcher.getText().length() > 0) {
-                    updateBanned(banned.copy().filter(p -> {
-                        return p.name.contains(searcher.getText());
-                    }));
+                    updateBanned(banned.copy().filter(p -> p.name.contains(searcher.getText())));
                 } else {
                     updateBanned(banned);
                 }
@@ -118,12 +113,12 @@ public class ConsoleFrameDialog extends BaseDialog {
                 t.setColor(0.5f, 0.5f, 0.5f, 1);
                 t.left();
                 t.button(Icon.undo, () -> {
-                    Log.info(p.uuid);
+                    Call.serverPacketReliable("unban", p.uuid);
+                    banned.remove(p);
+                    updateBanned(banned);
                 }).height(36f).width(36f);
                 t.add();
-                t.button(Icon.eye, () -> {
-                    updateProbivRequest(p.uuid);
-                }).height(36f).width(36f);
+                t.button(Icon.eye, () -> updateProbivRequest(p.uuid)).height(36f).width(36f);
             }).growX().height(36f).row();
             bannedPlayersData.table(Tex.whitePane, t -> {
                 t.setColor(0.5f, 0.5f, 0.5f, 1);
@@ -161,9 +156,14 @@ public class ConsoleFrameDialog extends BaseDialog {
                     t.button(Icon.adminSmall, () -> {
                     });
                 } else {
-                    t.button(Icon.hammerSmall, Styles.cleari, () -> ui.showConfirm("@confirm", Core.bundle.format("confirmban", p.lastName), () -> {
+                    t.button(Icon.hammerSmall, Styles.cleari, () ->
+                            ui.showConfirm("@confirm", Core.bundle.format("confirmban", p.lastName), () -> {
                         //todo добавить кода
                     }));
+                    t.button(Icon.cancelSmall, Styles.cleari, () -> {
+                        data.remove(p);
+                        updateProbiv(data);
+                    });
                 }
             }).growX().height(36f).row();
             probivData.table(Tex.whitePane, t -> {
@@ -173,23 +173,17 @@ public class ConsoleFrameDialog extends BaseDialog {
                 t.add("Nickname");
                 t.add("|");
                 t.add(p.lastName);
-                t.button(Icon.copySmall, () -> {
-                    Core.app.setClipboardText(p.lastName);
-                }).size(10f);
+                t.button(Icon.copySmall, () -> Core.app.setClipboardText(p.lastName)).size(10f);
                 t.row();
                 t.add("UUID");
                 t.add("|");
                 t.add(p.uuid);
-                t.button(Icon.copySmall, () -> {
-                    Core.app.setClipboardText(p.uuid);
-                }).size(10f);
+                t.button(Icon.copySmall, () -> Core.app.setClipboardText(p.uuid)).size(10f);
                 t.row();
                 t.add("IP");
                 t.add("|");
                 t.add(p.lastIP);
-                t.button(Icon.copySmall, () -> {
-                    Core.app.setClipboardText(p.lastIP);
-                }).size(10f);
+                t.button(Icon.copySmall, () -> Core.app.setClipboardText(p.lastIP)).size(10f);
                 t.row();
                 t.row();
                 String n = p.names.first();
@@ -198,17 +192,13 @@ public class ConsoleFrameDialog extends BaseDialog {
                 t.add(">");
                 t.add(n);
                 String finalN = n;
-                t.button(Icon.copySmall, () -> {
-                    Core.app.setClipboardText(finalN);
-                }).size(10f);
+                t.button(Icon.copySmall, () -> Core.app.setClipboardText(finalN)).size(10f);
                 t.row();
                 for (String name : p.names) {
                     t.add(" ");
                     t.add(">");
                     t.add(name);
-                    t.button(Icon.copySmall, () -> {
-                        Core.app.setClipboardText(name);
-                    }).size(10f);
+                    t.button(Icon.copySmall, () -> Core.app.setClipboardText(name)).size(10f);
                     t.row();
                 }
                 n = p.ips.first();
@@ -217,17 +207,13 @@ public class ConsoleFrameDialog extends BaseDialog {
                 t.add(">");
                 t.add(n);
                 String finalN1 = n;
-                t.button(Icon.copySmall, () -> {
-                    Core.app.setClipboardText(finalN1);
-                }).size(10f);
+                t.button(Icon.copySmall, () -> Core.app.setClipboardText(finalN1)).size(10f);
                 t.row();
                 for (String name : p.ips) {
                     t.add(" ");
                     t.add(">");
                     t.add(name);
-                    t.button(Icon.copySmall, () -> {
-                        Core.app.setClipboardText(name);
-                    }).size(10f);
+                    t.button(Icon.copySmall, () -> Core.app.setClipboardText(name)).size(10f);
                     t.row();
                 }
             });
@@ -247,7 +233,6 @@ public class ConsoleFrameDialog extends BaseDialog {
         if (players.find(pl -> Objects.equals(p.uuid, pl.uuid)) != null) return;
         players.add(p);
         players = players.filter(pl -> {
-            boolean nya = false;
             for (String name : pl.names) {
                 if (name.contains(searcher2.getText())) return true;
             }
@@ -264,24 +249,10 @@ public class ConsoleFrameDialog extends BaseDialog {
     }
 
     public static class BannedPlayer {
-        public String name;
-        public String uuid;
-        public String adminName;
-        public Long unbanDate;
-        public String reason;
+        public String name, uuid, adminName, reason;
+        public long unbanDate;
 
-        public BannedPlayer(String name, String uuid, String adminName, Long unBanDate, String reason) {
-            this.name = name;
-            this.uuid = uuid;
-            this.adminName = adminName;
-            this.unbanDate = unBanDate;
-            this.reason = reason;
-        }
-
-        public static BannedPlayer parse(String jsonString) {
-            JsonValue json = new JsonReader().parse(jsonString);
-            return new BannedPlayer(json.getString("name"), json.getString("uuid"), json.getString("adminName"), json.getLong("unbandate"), json.getString("reason"));
-        }
+        public BannedPlayer() {}
     }
 
     public static class InfoPlayer {
@@ -289,18 +260,6 @@ public class ConsoleFrameDialog extends BaseDialog {
         boolean admin;
         Seq<String> names, ips;
 
-        public InfoPlayer(String lastName, String lastIP, String uuid, boolean admin, Seq<String> names, Seq<String> ips) {
-            this.lastName = lastName;
-            this.lastIP = lastIP;
-            this.uuid = uuid;
-            this.admin = admin;
-            this.names = names;
-            this.ips = ips;
-        }
-
-        public static InfoPlayer parse(String jsonString) {
-            JsonValue json = new JsonReader().parse(jsonString);
-            return new InfoPlayer(json.getString("lastName"), json.getString("lastIp"), json.getString("uuid"), json.getBoolean("admin"), new Seq<String>(json.get("names").asStringArray()), new Seq<String>(json.get("ips").asStringArray()));
-        }
+        public InfoPlayer() {}
     }
 }

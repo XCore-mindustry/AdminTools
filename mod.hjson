@@ -5,16 +5,16 @@ displayName: "Admin Tools"
 name: "admintools-mod"
 
 #your name
-author: "Vortex-coders"
+author: "OSPx && Kowkonya"
 
 #the fully qualified main class of the mod
 main: "admintools.AdminTools"
 
 #the mod description as seen in the mod dialog
-description: "A Mindustry Java mod template."
+description: "A XCore admin mod"
 
 #the mod version
-version: 1.0
+version: 1.1
 
 #the minimum game build required to run this mod
 minGameVersion: 140.4
