@@ -8,6 +8,7 @@ import arc.scene.ui.ScrollPane;
 import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.gen.Call;
@@ -37,7 +38,7 @@ public class ConsoleFrameDialog extends BaseDialog {
     public ScrollPane panel1, panel2;
 
     public ConsoleFrameDialog() {
-        super("Console");
+        super("Hentai checker v277353");
 
         updateBanned(banned);
 
@@ -158,7 +159,7 @@ public class ConsoleFrameDialog extends BaseDialog {
                 } else {
                     t.button(Icon.hammerSmall, Styles.cleari, () ->
                             ui.showConfirm("@confirm", Core.bundle.format("confirmban", p.lastName), () -> {
-                        //todo добавить кода
+
                     }));
                     t.button(Icon.cancelSmall, Styles.cleari, () -> {
                         data.remove(p);
@@ -186,35 +187,38 @@ public class ConsoleFrameDialog extends BaseDialog {
                 t.button(Icon.copySmall, () -> Core.app.setClipboardText(p.lastIP)).size(10f);
                 t.row();
                 t.row();
-                String n = p.names.first();
-                p.names.remove(0);
-                t.add("Names");
-                t.add(">");
-                t.add(n);
-                String finalN = n;
-                t.button(Icon.copySmall, () -> Core.app.setClipboardText(finalN)).size(10f);
-                t.row();
-                for (String name : p.names) {
-                    t.add(" ");
+                if (p.names.size > 0) {
+                    String n = p.names.first();
+                    p.names.remove(0);
+                    t.add("Names");
                     t.add(">");
-                    t.add(name);
-                    t.button(Icon.copySmall, () -> Core.app.setClipboardText(name)).size(10f);
+                    t.add(n);
+                    t.button(Icon.copySmall, () -> Core.app.setClipboardText(n)).size(10f);
                     t.row();
+                    for (String name : p.names) {
+                        t.add(" ");
+                        t.add(">");
+                        t.add(name);
+                        t.button(Icon.copySmall, () -> Core.app.setClipboardText(name)).size(10f);
+                        t.row();
+                    }
                 }
-                n = p.ips.first();
-                p.ips.remove(0);
-                t.add("IPs");
-                t.add(">");
-                t.add(n);
-                String finalN1 = n;
-                t.button(Icon.copySmall, () -> Core.app.setClipboardText(finalN1)).size(10f);
-                t.row();
-                for (String name : p.ips) {
-                    t.add(" ");
+
+                if (p.ips.size > 0) {
+                    String n = p.ips.first();
+                    p.ips.remove(0);
+                    t.add("IPs");
                     t.add(">");
-                    t.add(name);
-                    t.button(Icon.copySmall, () -> Core.app.setClipboardText(name)).size(10f);
+                    t.add(n);
+                    t.button(Icon.copySmall, () -> Core.app.setClipboardText(n)).size(10f);
                     t.row();
+                    for (String name : p.ips) {
+                        t.add(" ");
+                        t.add(">");
+                        t.add(name);
+                        t.button(Icon.copySmall, () -> Core.app.setClipboardText(name)).size(10f);
+                        t.row();
+                    }
                 }
             });
             probivData.row();
@@ -233,8 +237,10 @@ public class ConsoleFrameDialog extends BaseDialog {
         if (players.find(pl -> Objects.equals(p.uuid, pl.uuid)) != null) return;
         players.add(p);
         players = players.filter(pl -> {
+            boolean nya = false;
             for (String name : pl.names) {
-                if (name.contains(searcher2.getText())) return true;
+                if (Strings.stripColors(name).contains(searcher2.getText()) || name.contains(searcher2.getText()))
+                    return true;
             }
             return pl.uuid.contains(searcher2.getText()) || pl.lastName.contains(searcher2.getText());
         });
