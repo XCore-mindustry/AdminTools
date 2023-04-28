@@ -1,46 +1,80 @@
 package admintools;
 
 import arc.scene.ui.layout.Table;
+import arc.util.Log;
 import arc.util.Reflect;
 import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Iconc;
 
-import java.time.Instant;
-
-import static admintools.AdminTools.shortDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class HistoryFrame {
-    public static TravelerFragment historyBF;
     public static Table table = new Table();
 
-    public static void update(TransportableHistoryStack stack){
+    static HistoryEntry[] st;
+    static int pageId = 0;
+
+    public static void update(HistoryEntry[] stack) {
+        st = stack;
+        pageId = 0;
+
+        if (stack.length < 1) {
+            table.clear();
+            return;
+        } else {
+            openPage(0);
+        }
+    }
+
+    public static boolean openPage(int id) {
+        Log.info(id + 1 + ">" + Math.ceil(st.length / 6f));
+        if (id + 1 > Math.ceil(st.length / 6f) || id < 0) {
+            return false;
+        }
         table.clear();
-        table.labelWrap("История тайл ("+stack.x+"; "+stack.y+")");
+
+        table.add("История тайл (" + st[0].x + "; " + st[0].y + ") | Страница: " + (id + 1));
         table.row();
-        for(var nya : stack.data){
-            if(nya == null) continue;
-            table.add(Strings.stripColors(nya.name));
-            table.add("  |  ");
-            table.add(emoji(Vars.content.block(nya.blockID))+""); // че за шиза
-            table.add("  |  ");
-            table.add(nya.type.name());
-            table.add("  |  ");
-            table.add(shortDateFormat.format(Instant.ofEpochMilli(nya.time))); // я отойду // поесть
-            table.row();
+        table.button(Iconc.left + "", () -> {
+            changePage(false);
+        });
+        table.row();
+
+        int iEnd = Math.max(0, st.length - (id * 6));
+        int iStart = Math.max(0, st.length - ((id + 1) * 6));
+
+        Table table1 = new Table();
+        for (int i = iStart; i < iEnd; i++) {
+            var nya = st[i];
+            table1.add(Strings.stripColors(nya.name));
+            table1.add("  |  ");
+            table1.add(String.valueOf(emoji(Vars.content.block(nya.block))));
+            table1.add("  |  ");
+            table1.add(nya.rotationAsString());
+            table1.add("  |  ");
+            table1.add(nya.config.length() > 15 ? nya.config.substring(0, 15) : nya.config);
+            table1.add("  |  ");
+            table1.add(LocalTime.MIN.plusSeconds(nya.time).format(DateTimeFormatter.ISO_LOCAL_TIME)); // я отойду // поесть
+            table1.row();
+        }
+        table.add(table1);
+        table.row();
+        table.button(Iconc.right + "", () -> {
+            changePage(true);
+        });
+        return true;
+    }
+
+    public static void changePage(boolean plus) {
+        int tdx = plus ? pageId + 1 : pageId - 1;
+        if (openPage(tdx)) {
+            pageId = tdx;
         }
     }
 
-    public static class TransportableHistoryStack {
-        int x;
-        int y;
-        HistoryEntry[] data;
-
-        public TransportableHistoryStack() {
-
-        }
-    }
     public static char emoji(UnlockableContent content) {
         try {
             return Reflect.get(Iconc.class, Strings.kebabToCamel(content.getContentType().name() + "-" + content.name));

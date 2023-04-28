@@ -24,8 +24,8 @@ public class AdminTools extends Mod {
 
         if (Vars.mobile) return;
 
-        netClient.addPacketHandler("take_history_info", content -> {
-            HistoryFrame.TransportableHistoryStack stack = JsonIO.read(HistoryFrame.TransportableHistoryStack.class, content);
+        netClient.addPacketHandler("take_history_infov2", content -> {
+            HistoryEntry[] stack = JsonIO.read(HistoryEntry[].class, content);
             if (stack == null) return;
             HistoryFrame.update(stack);
         });

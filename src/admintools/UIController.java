@@ -70,6 +70,9 @@ public class UIController {
         portalTab.button(Icon.planetSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6569)).uniformX().uniformY().fill();
         portalTab.button(Icon.modeAttackSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6570)).uniformX().uniformY().fill();
         portalTab.button(Icon.starSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6572)).uniformX().uniformY().fill();
+        portalTab.row();
+        portalTab.button(Icon.commandAttackSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6571)).uniformX().uniformY().fill();
+
 
         //Generate carma info
         carma.row();
