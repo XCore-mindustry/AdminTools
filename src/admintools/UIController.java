@@ -32,7 +32,7 @@ public class UIController {
         Core.scene.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, KeyCode keycode) {
-                if ((Core.input.keyDown(KeyCode.h) || Core.input.keyDown(KeyCode.p) || Core.input.keyDown(KeyCode.c) || Core.input.keyDown(KeyCode.a) || Core.input.keyDown(KeyCode.t)) && (Core.input.keyDown(KeyCode.controlLeft) || Core.input.keyDown(KeyCode.controlRight))) {
+                if ((Core.input.keyDown(KeyCode.h) || Core.input.keyDown(KeyCode.p) || Core.input.keyDown(KeyCode.c) || Core.input.keyDown(KeyCode.t)) && (Core.input.keyDown(KeyCode.controlLeft) || Core.input.keyDown(KeyCode.controlRight))) {
                     if (keycode == KeyCode.p) {
                         new ConsoleFrameDialog().show();
                         return true;
@@ -47,10 +47,6 @@ public class UIController {
                     }
                     if (keycode == KeyCode.t) {
                         showPortalTab = !showPortalTab;
-                        return true;
-                    }
-                    if (keycode == (KeyCode.a)) {
-                        hideAll = !hideAll;
                         return true;
                     }
                     container.updateVisibility();

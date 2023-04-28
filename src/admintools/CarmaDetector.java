@@ -24,11 +24,15 @@ public class CarmaDetector {
 
     public static void init() {
         Events.on(EventType.PlayerJoin.class, e -> {
+            if (e.player == null)
+                return;
             blocksBuild.put(e.player.name, 0);
             blocksDestroy.put(e.player.name, 0);
         });
 
         Events.on(EventType.PlayerLeave.class, e -> {
+            if (e.player == null)
+                return;
             blocksBuild.remove(e.player.name);
             blocksDestroy.remove(e.player.name);
         });
