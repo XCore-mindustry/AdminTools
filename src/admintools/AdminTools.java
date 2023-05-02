@@ -14,8 +14,9 @@ import static mindustry.Vars.netClient;
 
 public class AdminTools extends Mod {
 
-    public static final DateTimeFormatter shortDateFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withZone(ZoneId.systemDefault());
     public static final DateTimeFormatter longDateFormat = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.uu").withZone(ZoneId.systemDefault());
+
+    public static UIController ui;
 
     @Override
     public void init() {
@@ -24,10 +25,16 @@ public class AdminTools extends Mod {
 
         if (Vars.mobile) return;
 
-        netClient.addPacketHandler("take_history_infov2", content -> {
+        netClient.addPacketHandler("tilelogger_history_tile", content -> {
             HistoryEntry[] stack = JsonIO.read(HistoryEntry[].class, content);
             if (stack == null) return;
             HistoryFrame.update(stack);
+        });
+
+        netClient.addPacketHandler("tilelogger_rollback_preview", content -> {
+            HistoryEntry[] stack = JsonIO.read(HistoryEntry[].class, content);
+            if (stack == null) return;
+//            ui.updatePreview(stack);
         });
 
         netClient.addPacketHandler("ban_data", content -> {
@@ -42,7 +49,7 @@ public class AdminTools extends Mod {
             ConsoleFrameDialog.addProbived(info);
         });
 
-        Events.on(EventType.ClientLoadEvent.class, e -> new UIController());
+        Events.on(EventType.ClientLoadEvent.class, e -> ui = new UIController());
 
         CarmaDetector.init();
     }

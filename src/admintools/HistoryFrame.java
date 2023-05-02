@@ -1,7 +1,6 @@
 package admintools;
 
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import arc.util.Reflect;
 import arc.util.Strings;
 import mindustry.Vars;
@@ -30,18 +29,27 @@ public class HistoryFrame {
     }
 
     public static boolean openPage(int id) {
-        Log.info(id + 1 + ">" + Math.ceil(st.length / 6f));
         if (id + 1 > Math.ceil(st.length / 6f) || id < 0) {
             return false;
         }
         table.clear();
 
-        table.add("История тайл (" + st[0].x + "; " + st[0].y + ") | Страница: " + (id + 1));
+        table.add("История тайл (" + st[0].x + "; " + st[0].y + ")");
         table.row();
-        table.button(Iconc.left + "", () -> {
+
+        var t = new Table();
+
+        t.button(Iconc.left + "", () -> {
             changePage(false);
         });
+        t.add((id + 1) + "/" + (int) Math.ceil(st.length / 6f));
+        t.button(Iconc.right + "", () -> {
+            changePage(true);
+        });
+        table.add(t);
+
         table.row();
+
 
         int iEnd = Math.max(0, st.length - (id * 6));
         int iStart = Math.max(0, st.length - ((id + 1) * 6));
@@ -62,9 +70,7 @@ public class HistoryFrame {
         }
         table.add(table1);
         table.row();
-        table.button(Iconc.right + "", () -> {
-            changePage(true);
-        });
+
         return true;
     }
 

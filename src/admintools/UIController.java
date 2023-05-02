@@ -1,18 +1,26 @@
 package admintools;
 
 import arc.Core;
+import arc.graphics.g2d.Draw;
 import arc.input.KeyCode;
+import arc.math.geom.Rect;
 import arc.scene.event.InputEvent;
 import arc.scene.event.InputListener;
 import arc.scene.event.Touchable;
 import arc.scene.ui.layout.WidgetGroup;
+import arc.struct.Seq;
 import arc.util.Align;
 import arc.util.Time;
 import mindustry.Vars;
+import mindustry.content.Blocks;
 import mindustry.gen.Icon;
 import mindustry.ui.Styles;
 
+import static arc.Core.camera;
+import static mindustry.Vars.renderer;
+
 public class UIController {
+    public Rect bounds = new Rect();
     boolean hideAll = false;
     boolean showCarma = false;
     boolean showHistory = false;
@@ -24,6 +32,8 @@ public class UIController {
     public final TravelerFragment history = new TravelerFragment("history");
     public final TravelerFragment portalTab = new TravelerFragment("portal");
 
+    public final Seq<HistoryEntry> preview = new Seq<>();
+
     public UIController() {
         container.setFillParent(true);
         container.touchable = Touchable.childrenOnly;
@@ -32,7 +42,7 @@ public class UIController {
         Core.scene.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, KeyCode keycode) {
-                if ((Core.input.keyDown(KeyCode.h) || Core.input.keyDown(KeyCode.p) || Core.input.keyDown(KeyCode.c) || Core.input.keyDown(KeyCode.t)) && (Core.input.keyDown(KeyCode.controlLeft) || Core.input.keyDown(KeyCode.controlRight))) {
+                if ((Core.input.keyDown(KeyCode.h) || Core.input.keyDown(KeyCode.p) || Core.input.keyDown(KeyCode.c) || Core.input.keyDown(KeyCode.t) || Core.input.keyDown(KeyCode.q)) && (Core.input.keyDown(KeyCode.controlLeft) || Core.input.keyDown(KeyCode.controlRight))) {
                     if (keycode == KeyCode.p) {
                         new ConsoleFrameDialog().show();
                         return true;
@@ -91,5 +101,23 @@ public class UIController {
         container.addChild(history);
 
         ConsoleFrameDialog.init();//todo remove
+
+        renderer.addEnvRenderer(0, () -> {
+            camera.bounds(bounds); // do NOT use Tmp.r1
+            preview.each(t -> {
+                var tile = Vars.world.tile(t.x, t.y);
+                var block = Vars.content.block(t.block);
+                if (block == Blocks.air) {
+                    tile.floor().drawBase(tile);
+                } else {
+                    Draw.rect(block.region, t.x, t.y, t.rotation);
+                }
+            });
+        });
+    }
+
+    public void updatePreview(HistoryEntry[] p) {
+        preview.clear();
+        preview.addAll(p);
     }
 }
