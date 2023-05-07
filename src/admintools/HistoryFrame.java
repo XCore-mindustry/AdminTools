@@ -4,6 +4,7 @@ import arc.scene.ui.layout.Table;
 import arc.util.Reflect;
 import arc.util.Strings;
 import mindustry.Vars;
+import mindustry.content.Blocks;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Iconc;
 
@@ -59,13 +60,13 @@ public class HistoryFrame {
             var nya = st[i];
             table1.add(Strings.stripColors(nya.name));
             table1.add("  |  ");
-            table1.add(String.valueOf(emoji(Vars.content.block(nya.block))));
+            table1.add((!nya.valid ? "[red]" : "") + emoji(Vars.content.block(nya.block)));
             table1.add("  |  ");
-            table1.add(nya.rotationAsString());
+            table1.add((!nya.valid ? "[red]" : "") + nya.rotationAsString());
             table1.add("  |  ");
             table1.add(nya.config.length() > 15 ? nya.config.substring(0, 15) : nya.config);
             table1.add("  |  ");
-            table1.add(LocalTime.MIN.plusSeconds(nya.time).format(DateTimeFormatter.ISO_LOCAL_TIME)); // я отойду // поесть
+            table1.add((!nya.valid ? "[red]" : "") + LocalTime.MIN.plusSeconds(nya.time).format(DateTimeFormatter.ISO_LOCAL_TIME)); // я отойду // поесть
             table1.row();
         }
         table.add(table1);
@@ -85,6 +86,9 @@ public class HistoryFrame {
         try {
             return Reflect.get(Iconc.class, Strings.kebabToCamel(content.getContentType().name() + "-" + content.name));
         } catch (Exception e) {
+            if (content == Blocks.air) {
+                return 'X';
+            }
             return '?';
         }
     }
