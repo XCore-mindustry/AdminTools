@@ -31,11 +31,11 @@ public class AdminTools extends Mod {
             HistoryFrame.update(stack);
         });
 
-        netClient.addPacketHandler("tilelogger_rollback_preview", content -> {
-            HistoryEntry[] stack = JsonIO.read(HistoryEntry[].class, content);
-            if (stack == null) return;
+//        netClient.addPacketHandler("tilelogger_rollback_preview", content -> {
+//            HistoryEntry[] stack = JsonIO.read(HistoryEntry[].class, content);
+//            if (stack == null) return;
 //            ui.updatePreview(stack);
-        });
+//        });
 
         netClient.addPacketHandler("ban_data", content -> {
             ConsoleFrameDialog.BannedPlayer ban = JsonIO.read(ConsoleFrameDialog.BannedPlayer.class, content);
