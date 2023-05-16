@@ -1,6 +1,5 @@
 package admintools;
 
-import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import arc.util.serialization.JsonReader;
@@ -10,11 +9,8 @@ import mindustry.gen.Call;
 import mindustry.ui.dialogs.BaseDialog;
 
 public class BanDialog extends BaseDialog {
-
     public String reason;
     public String banTime = "0";
-
-    boolean global = false;
 
     public BanDialog(String content) {
         super("ban");
@@ -33,10 +29,8 @@ public class BanDialog extends BaseDialog {
             table.defaults().height(60f).padTop(8);
             table.field(null, value -> reason = value);
             table.row();
-            table.add("Ban duration(in days): ").padRight(8f);
-            table.field(null, TextField.TextFieldFilter.digitsOnly, value -> banTime = value);
-            table.row();
-            table.check("Global Ban", g  -> global = g);
+            table.add("Ban duration(1d, 1h30m, etc): ").padRight(8f);
+            table.field(null, value -> banTime = value);
             table.row();
             cont.row();
             cont.add(table);
@@ -46,13 +40,6 @@ public class BanDialog extends BaseDialog {
         buttons.button("@ok", () -> {
             json.get("reason").set(reason);
             json.get("duration").set(banTime);
-            json.get("global").set(global);
-            Call.serverPacketReliable("take_ban_data", json.toJson(JsonWriter.OutputType.json));
-            hide();
-        });
-        buttons.button("Skip to discord", () -> {
-            json.get("skip_to_discord").set(true);
-
             Call.serverPacketReliable("take_ban_data", json.toJson(JsonWriter.OutputType.json));
             hide();
         });

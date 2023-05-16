@@ -43,10 +43,6 @@ public class UIController {
             @Override
             public boolean keyDown(InputEvent event, KeyCode keycode) {
                 if ((Core.input.keyDown(KeyCode.h) || Core.input.keyDown(KeyCode.p) || Core.input.keyDown(KeyCode.c) || Core.input.keyDown(KeyCode.t) || Core.input.keyDown(KeyCode.q)) && (Core.input.keyDown(KeyCode.controlLeft) || Core.input.keyDown(KeyCode.controlRight))) {
-                    if (keycode == KeyCode.p) {
-                        new ConsoleFrameDialog().show();
-                        return true;
-                    }
                     if (keycode == (KeyCode.h)) {
                         showHistory = !showHistory;
                         return true;
@@ -99,8 +95,6 @@ public class UIController {
         container.addChild(portalTab);
         container.addChild(carma);
         container.addChild(history);
-
-        ConsoleFrameDialog.init();//todo remove
 
         renderer.addEnvRenderer(0, () -> {
             camera.bounds(bounds); // do NOT use Tmp.r1

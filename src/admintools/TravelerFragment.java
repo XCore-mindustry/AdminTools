@@ -30,7 +30,7 @@ public class TravelerFragment extends Table {
 
         dragger.addListener(new InputListener() {
 
-            protected float dragx, dragy;
+            private float dragx, dragy;
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button) {
