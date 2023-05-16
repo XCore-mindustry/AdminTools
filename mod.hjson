@@ -17,7 +17,7 @@ description: "A XCore admin mod"
 version: 1.2
 
 #the minimum game build required to run this mod
-minGameVersion: 140.4
+minGameVersion: 144
 
 hidden: true
 

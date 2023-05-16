@@ -18,8 +18,6 @@ public class CarmaDetector {
     public static final ObjectMap<String, Integer> blocksBuild = new ObjectMap<>();
     public static final ObjectMap<String, Integer> blocksDestroy = new ObjectMap<>();
 
-    public static TravelerFragment carmaInfo;
-
     public static Table table = new Table();
 
     public static void init() {

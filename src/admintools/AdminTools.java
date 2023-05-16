@@ -7,15 +7,9 @@ import mindustry.gen.Call;
 import mindustry.io.JsonIO;
 import mindustry.mod.Mod;
 
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-
 import static mindustry.Vars.netClient;
 
 public class AdminTools extends Mod {
-
-    public static final DateTimeFormatter longDateFormat = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.uu").withZone(ZoneId.systemDefault());
-
     public static UIController ui;
 
     @Override

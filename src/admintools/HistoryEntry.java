@@ -19,8 +19,6 @@ public class HistoryEntry {
     public HistoryEntry() {
     }
 
-    ;
-
     public HistoryEntry(short x, short y, String name, String uuid, short time, short block, short rotation, short config_type, String config, boolean valid) {
         this.x = x;
         this.y = y;
