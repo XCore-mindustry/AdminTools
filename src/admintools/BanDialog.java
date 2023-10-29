@@ -11,15 +11,15 @@ import mindustry.ui.dialogs.BaseDialog;
 public class BanDialog extends BaseDialog {
     public String reason;
     public String banTime = "0";
+    public JsonValue json;
 
     public BanDialog(String content) {
         super("ban");
         Log.info(content);
-        JsonValue json = new JsonReader().parse(content);
+        json = new JsonReader().parse(content);
 
         String name = json.get("name").asString();
 
-        closeOnBack();
         shown(() -> {
             cont.clear();
             Table table = new Table();
@@ -36,12 +36,21 @@ public class BanDialog extends BaseDialog {
             cont.add(table);
         });
         buttons.defaults().size(200f, 50f);
-        buttons.button("@cancel", this::hide);
+
+        closeOnBack(this::cancel);
+        buttons.button("@cancel", () -> {
+            hide();
+            cancel();
+        });
+
         buttons.button("@ok", () -> {
             json.get("reason").set(reason);
             json.get("duration").set(banTime);
             Call.serverPacketReliable("take_ban_data", json.toJson(JsonWriter.OutputType.json));
             hide();
         });
+    }
+    private void cancel() {
+        Call.serverPacketReliable("cancel_ban_data", json.toJson(JsonWriter.OutputType.json));
     }
 }
