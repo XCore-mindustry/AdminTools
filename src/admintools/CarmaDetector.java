@@ -67,7 +67,7 @@ public class CarmaDetector {
             table.button(Icon.hammerSmall, Styles.cleari, () -> ui.showConfirm("@confirm", Core.bundle.format("confirmban", nya.name), () -> {
                 var user = Groups.player.find(p -> p.name().equals(nya.name));
                 if (user != null) {
-                    Call.adminRequest(user, Packets.AdminAction.ban);
+                    Call.adminRequest(user, Packets.AdminAction.ban, null);
                 }
             }));
             table.add(nya.name);
