@@ -1,5 +1,6 @@
 package admintools;
 
+import arc.Core;
 import arc.Events;
 import mindustry.Vars;
 import mindustry.game.EventType;
@@ -32,6 +33,16 @@ public class AdminTools extends Mod {
 //            ui.updatePreview(stack);
 //        });
 
+        Events.on(EventType.ClientChatEvent.class, e -> {
+            String message = e.message;
+
+            if (message.startsWith("/xl")) {
+                Call.sendChatMessage("/login " + Core.settings.getString("xcore-login"));
+            }
+            if (message.startsWith("/login")) {
+                Core.settings.put("xcore-login", message.substring(7));
+            }
+        });
         Events.on(EventType.ClientLoadEvent.class, e -> ui = new UIController());
 
         CarmaDetector.init();
