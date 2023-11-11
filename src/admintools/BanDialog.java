@@ -5,6 +5,7 @@ import arc.util.Log;
 import arc.util.serialization.JsonReader;
 import arc.util.serialization.JsonValue;
 import arc.util.serialization.JsonWriter;
+import mindustry.Vars;
 import mindustry.gen.Call;
 import mindustry.ui.dialogs.BaseDialog;
 
@@ -15,10 +16,13 @@ public class BanDialog extends BaseDialog {
 
     public BanDialog(String content) {
         super("ban");
-        Log.info(content);
-        json = new JsonReader().parse(content);
-
-        String name = json.get("name").asString();
+        try {
+            json = new JsonReader().parse(content);
+        } catch (Exception e) {
+            Log.err(e);
+            Vars.ui.showException("An error occurred while parsing the ban data:", e);
+            return;
+        }
 
         shown(() -> {
             cont.clear();
@@ -44,6 +48,15 @@ public class BanDialog extends BaseDialog {
         });
 
         buttons.button("@ok", () -> {
+            reason = switch (reason) {
+                case "1" -> "grief";
+                case "2" -> "inadequate behavior";
+                case "3" -> "vote kick without reason";
+                case "4" -> "exploiting";
+                case "5" -> "ban bypassing";
+                case "6" -> "adult content";
+                default -> reason;
+            };
             json.get("reason").set(reason);
             json.get("duration").set(banTime);
             Call.serverPacketReliable("take_ban_data", json.toJson(JsonWriter.OutputType.json));
