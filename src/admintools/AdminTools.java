@@ -27,12 +27,6 @@ public class AdminTools extends Mod {
             HistoryFrame.update(stack);
         });
 
-//        netClient.addPacketHandler("tilelogger_rollback_preview", content -> {
-//            HistoryEntry[] stack = JsonIO.read(HistoryEntry[].class, content);
-//            if (stack == null) return;
-//            ui.updatePreview(stack);
-//        });
-
         Events.on(EventType.ClientChatEvent.class, e -> {
             String message = e.message;
 
@@ -43,7 +37,21 @@ public class AdminTools extends Mod {
                 Core.settings.put("xcore-login", message.substring(7));
             }
         });
-        Events.on(EventType.ClientLoadEvent.class, e -> ui = new UIController());
+        Events.on(EventType.ClientLoadEvent.class, e -> {
+            ui = new UIController();
+
+            Vars.ui.settings.addCategory("AdminTools", table -> table.table(t -> {
+                t.check("Hide all", ui.hideAll, b -> ui.hideAll = b).left().row();
+                t.check("Carma", ui.showCarma, b -> ui.showCarma = b).left().row();
+                t.check("History", ui.showHistory, b -> ui.showHistory = b).left().row();
+                t.check("Portal", ui.showPortalTab, b -> ui.showPortalTab = b).left().row();
+//                boolean notifications = Core.settings.getBool("admintools-notifications");
+//                t.check("Voice notifications",
+//                                notifications,
+//                                b -> Core.settings.put("admintools-notifications", b))
+//                        .left().row();
+            }));
+        });
 
         CarmaDetector.init();
     }
