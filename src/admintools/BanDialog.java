@@ -16,8 +16,10 @@ public class BanDialog extends BaseDialog {
 
     public BanDialog(String content) {
         super("ban");
+        String nickname;
         try {
             json = new JsonReader().parse(content);
+            nickname = json.getString("name");
         } catch (Exception e) {
             Log.err(e);
             Vars.ui.showException("An error occurred while parsing the ban data:", e);
@@ -27,7 +29,7 @@ public class BanDialog extends BaseDialog {
         shown(() -> {
             cont.clear();
             Table table = new Table();
-            table.add(name);
+            table.add(nickname);
             table.row();
             table.add("Reason: ").padRight(8f);
             table.defaults().height(60f).padTop(8);
