@@ -5,6 +5,7 @@ import arc.Events;
 import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.gen.Call;
+import mindustry.gen.Sounds;
 import mindustry.io.JsonIO;
 import mindustry.mod.Mod;
 
@@ -18,6 +19,14 @@ public class AdminTools extends Mod {
         netClient.addPacketHandler("give_ban_data", content -> new BanDialog(content).show());
         netClient.addPacketHandler("adm_mod_begin", content ->
                 Call.serverPacketReliable("adm_mod_end", Vars.mods.getMod("admintools-mod").meta.version));
+        netClient.addPacketHandler("adm_mod_votekick", content -> {
+            String[] args = content.split(",");
+            boolean notifications = Core.settings.getBool("admintools-notifications");
+
+            if (notifications) {
+                for (int i = 0;i < 7; i++) Sounds.message.play(70);
+            }
+        });
 
         if (Vars.mobile) return;
 
@@ -45,11 +54,11 @@ public class AdminTools extends Mod {
                 t.check("Carma", ui.showCarma, b -> ui.showCarma = b).left().row();
                 t.check("History", ui.showHistory, b -> ui.showHistory = b).left().row();
                 t.check("Portal", ui.showPortalTab, b -> ui.showPortalTab = b).left().row();
-//                boolean notifications = Core.settings.getBool("admintools-notifications");
-//                t.check("Voice notifications",
-//                                notifications,
-//                                b -> Core.settings.put("admintools-notifications", b))
-//                        .left().row();
+                boolean notifications = Core.settings.getBool("admintools-notifications");
+                t.check("Voice notifications",
+                                notifications,
+                                b -> Core.settings.put("admintools-notifications", b))
+                        .left().row();
             }));
         });
 

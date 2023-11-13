@@ -55,6 +55,7 @@ public class UIController {
                         showPortalTab = !showPortalTab;
                         return true;
                     }
+
                     container.updateVisibility();
                     return false;
                 }
