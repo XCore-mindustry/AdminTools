@@ -44,7 +44,7 @@ public class AdminTools extends Mod {
             }
             if (message.startsWith("/login")) {
                 String[] password = message.split(" ");
-                if (password.length < 1) return;
+                if (password.length < 2) return;
                 
                 Core.settings.put("xcore-login", password[1]);
             }
