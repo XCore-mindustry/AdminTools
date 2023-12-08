@@ -43,7 +43,10 @@ public class AdminTools extends Mod {
                 Call.sendChatMessage("/login " + Core.settings.getString("xcore-login"));
             }
             if (message.startsWith("/login")) {
-                Core.settings.put("xcore-login", message.substring(7));
+                String[] password = message.split(" ");
+                if (password.length < 2) return;
+                
+                Core.settings.put("xcore-login", password[1]);
             }
         });
         Events.on(EventType.ClientLoadEvent.class, e -> {
