@@ -24,7 +24,7 @@ public class AdminTools extends Mod {
             boolean notifications = Core.settings.getBool("admintools-notifications");
 
             if (notifications) {
-                for (int i = 0;i < 7; i++) Sounds.message.play(70);
+                for (int i = 0;i < 7; i++) Sounds.message.play(40);
             }
         });
 

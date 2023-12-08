@@ -67,14 +67,14 @@ public class UIController {
         Core.scene.add(container);
 
         //Generate Portal tab
-        portalTab.button(Icon.modePvpSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6567)).uniformX().uniformY().fill();
-        portalTab.button(Icon.modeSurvivalSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6568)).uniformX().uniformY().fill();
+        portalTab.button(Icon.modePvpSmall, Styles.defaulti, () -> Vars.ui.join.connect("x-core.fun", 6567)).uniformX().uniformY().fill();
+        portalTab.button(Icon.modeSurvivalSmall, Styles.defaulti, () -> Vars.ui.join.connect("x-core.fun", 6568)).uniformX().uniformY().fill();
         portalTab.row();
-        portalTab.button(Icon.planetSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6569)).uniformX().uniformY().fill();
-        portalTab.button(Icon.modeAttackSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6570)).uniformX().uniformY().fill();
-        portalTab.button(Icon.starSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6572)).uniformX().uniformY().fill();
+        portalTab.button(Icon.planetSmall, Styles.defaulti, () -> Vars.ui.join.connect("x-core.fun", 6569)).uniformX().uniformY().fill();
+        portalTab.button(Icon.modeAttackSmall, Styles.defaulti, () -> Vars.ui.join.connect("x-core.fun", 6570)).uniformX().uniformY().fill();
+        portalTab.button(Icon.starSmall, Styles.defaulti, () -> Vars.ui.join.connect("x-core.fun", 6572)).uniformX().uniformY().fill();
         portalTab.row();
-        portalTab.button(Icon.commandAttackSmall, Styles.defaulti, () -> Vars.ui.join.connect("130.61.52.25", 6571)).uniformX().uniformY().fill();
+        portalTab.button(Icon.commandAttackSmall, Styles.defaulti, () -> Vars.ui.join.connect("x-core.fun", 6571)).uniformX().uniformY().fill();
 
 
         //Generate carma info
