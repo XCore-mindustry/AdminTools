@@ -2,9 +2,12 @@ package admintools;
 
 import arc.Core;
 import arc.Events;
+import arc.scene.style.TextureRegionDrawable;
 import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.gen.Call;
+import mindustry.gen.Icon;
+import mindustry.gen.Iconc;
 import mindustry.gen.Sounds;
 import mindustry.io.JsonIO;
 import mindustry.mod.Mod;
@@ -16,15 +19,27 @@ public class AdminTools extends Mod {
 
     @Override
     public void init() {
-        netClient.addPacketHandler("give_ban_data", content -> new BanDialog(content).show());
+        netClient.addPacketHandler("give_ban_data", BanDialog::new);
         netClient.addPacketHandler("adm_mod_begin", content ->
                 Call.serverPacketReliable("adm_mod_end", Vars.mods.getMod("admintools-mod").meta.version));
         netClient.addPacketHandler("adm_mod_votekick", content -> {
-            String[] args = content.split(",");
-            boolean notifications = Core.settings.getBool("admintools-notifications");
+            if (Core.settings.getBool("admintools-notifications")) for (int i = 0; i < 7; i++) Sounds.message.play(40);
+        });
 
-            if (notifications) {
-                for (int i = 0;i < 7; i++) Sounds.message.play(40);
+        Events.on(EventType.ClientChatEvent.class, e -> {
+            String message = e.message;
+
+            if (message.startsWith("/xl") || message.startsWith("/login"))
+                Call.sendChatMessage("/login " + Core.settings.getString("xcore-login"));
+
+            if (message.startsWith("/login")) {
+                String[] password = message.split(" ");
+                if (password.length < 2) {
+                    Vars.ui.chatfrag.addMessage(Iconc.warning + "[#f]Your password is too small.");
+                    return;
+                }
+
+                Core.settings.put("xcore-login", password[1]);
             }
         });
 
@@ -36,35 +51,19 @@ public class AdminTools extends Mod {
             HistoryFrame.update(stack);
         });
 
-        Events.on(EventType.ClientChatEvent.class, e -> {
-            String message = e.message;
-
-            if (message.startsWith("/xl")) {
-                Call.sendChatMessage("/login " + Core.settings.getString("xcore-login"));
-            }
-            if (message.startsWith("/login")) {
-                String[] password = message.split(" ");
-                if (password.length < 2) return;
-                
-                Core.settings.put("xcore-login", password[1]);
-            }
-        });
         Events.on(EventType.ClientLoadEvent.class, e -> {
             ui = new UIController();
 
-            Vars.ui.settings.addCategory("AdminTools", table -> table.table(t -> {
+            Vars.ui.settings.addCategory("AdminTools", new TextureRegionDrawable(Icon.admin.getRegion()), t -> {
                 t.check("Hide all", ui.hideAll, b -> ui.hideAll = b).left().row();
-                t.check("Carma", ui.showCarma, b -> ui.showCarma = b).left().row();
+                t.check("Karma", ui.showKarma, b -> ui.showKarma = b).left().row();
                 t.check("History", ui.showHistory, b -> ui.showHistory = b).left().row();
                 t.check("Portal", ui.showPortalTab, b -> ui.showPortalTab = b).left().row();
-                boolean notifications = Core.settings.getBool("admintools-notifications");
-                t.check("Voice notifications",
-                                notifications,
-                                b -> Core.settings.put("admintools-notifications", b))
-                        .left().row();
-            }));
+                t.check("Sounds Notifications", Core.settings.getBool("admintools-notifications"),
+                    b -> Core.settings.put("admintools-notifications", b)).left().row();
+            });
         });
 
-        CarmaDetector.init();
+        KarmaDetector.init();
     }
 }

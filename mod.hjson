@@ -5,20 +5,21 @@ displayName: "Admin Tools"
 name: "admintools-mod"
 
 #your name
-author: "OSPx && Kowkonya"
+author: "OSPx && Kowkonya && TheRadioactiveBanana"
 
 #the fully qualified main class of the mod
 main: "admintools.AdminTools"
 
 #the mod description as seen in the mod dialog
-description: "A XCore admin mod"
+description: "XCore Admin Mod"
 
 #the mod version
-version: 1.3
+version: 1.4
 
 #the minimum game build required to run this mod
-minGameVersion: 144
+minGameVersion: 146
 
+#if this mod is multiplayer compatible
 hidden: true
 
 #this is a java mod

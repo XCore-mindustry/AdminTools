@@ -1,13 +1,13 @@
 package admintools;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
 import arc.util.Reflect;
 import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.gen.Iconc;
 import mindustry.world.Block;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class HistoryEntry {
     public short x;
@@ -44,7 +44,7 @@ public class HistoryEntry {
             case 1 -> "";
             case 2 -> "";
             case 3 -> "";
-            default -> "?";
+            default -> Iconc.warning; //Should not happen
         };
     }
 

@@ -10,6 +10,7 @@ import mindustry.gen.Call;
 import mindustry.ui.dialogs.BaseDialog;
 
 public class BanDialog extends BaseDialog {
+    private static final JsonReader jsonReader = new JsonReader();
     public String reason;
     public String banTime = "0";
     public JsonValue json;
@@ -18,7 +19,7 @@ public class BanDialog extends BaseDialog {
         super("ban");
         String nickname;
         try {
-            json = new JsonReader().parse(content);
+            json = jsonReader.parse(content);
             nickname = json.getString("name");
         } catch (Exception e) {
             Log.err(e);
@@ -41,31 +42,34 @@ public class BanDialog extends BaseDialog {
             cont.row();
             cont.add(table);
         });
+
         buttons.defaults().size(200f, 50f);
 
         closeOnBack(this::cancel);
-        buttons.button("@cancel", () -> {
-            hide();
-            cancel();
-        });
+
+        buttons.button("@cancel", this::cancel);
 
         buttons.button("@ok", () -> {
             reason = switch (reason) {
-                case "1" -> "grief";
-                case "2" -> "inadequate behavior";
-                case "3" -> "vote kick without reason";
-                case "4" -> "exploiting";
-                case "5" -> "ban bypassing";
-                case "6" -> "adult content";
+                case "1" -> "Griefing";
+                case "2" -> "Bad Behaviour / Toxicity";
+                case "3" -> "Vote-kick with inadequate reason";
+                case "4" -> "Exploiting Bugs";
+                case "5" -> "Ban Evasion";
+                case "6" -> "NSFW Content";
                 default -> reason;
             };
+
             json.get("reason").set(reason);
             json.get("duration").set(banTime);
             Call.serverPacketReliable("take_ban_data", json.toJson(JsonWriter.OutputType.json));
             hide();
         });
+
+        show();
     }
     private void cancel() {
         Call.serverPacketReliable("cancel_ban_data", json.toJson(JsonWriter.OutputType.json));
+        hide();
     }
 }
