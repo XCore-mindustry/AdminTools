@@ -19,7 +19,7 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       with:
-        packages: platform-tools, build-tools
+        packages: "platform-tools build-tools"
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
     - name: Build mod jar
