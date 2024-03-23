@@ -18,6 +18,7 @@ import mindustry.ui.Styles;
 
 import static arc.Core.camera;
 import static mindustry.Vars.renderer;
+import static mindustry.Vars.ui;
 
 public class UIController extends InputListener {
 
@@ -42,14 +43,17 @@ public class UIController extends InputListener {
         Core.scene.add(container);
 
         //Generate Portal tab
-        portalTab.button(Icon.modePvpSmall, Styles.defaulti, () -> Vars.ui.join.connect("x-core.fun", 6567)).uniformX().uniformY().fill();
-        portalTab.button(Icon.modeSurvivalSmall, Styles.defaulti, () -> Vars.ui.join.connect("x-core.fun", 6568)).uniformX().uniformY().fill();
+        portalTab.button(Icon.modePvpSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6567)).uniformX().uniformY().fill();
+        portalTab.button(Icon.modeSurvivalSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6568)).uniformX().uniformY().fill();
         portalTab.row();
-        portalTab.button(Icon.planetSmall, Styles.defaulti, () -> Vars.ui.join.connect("x-core.fun", 6569)).uniformX().uniformY().fill();
-        portalTab.button(Icon.modeAttackSmall, Styles.defaulti, () -> Vars.ui.join.connect("x-core.fun", 6570)).uniformX().uniformY().fill();
-        portalTab.button(Icon.starSmall, Styles.defaulti, () -> Vars.ui.join.connect("x-core.fun", 6572)).uniformX().uniformY().fill();
+        portalTab.button(Icon.planetSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6569)).uniformX().uniformY().fill();
+        portalTab.button(Icon.modeAttackSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6570)).uniformX().uniformY().fill();
+        portalTab.button(Icon.starSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6572)).uniformX().uniformY().fill();
         portalTab.row();
-        portalTab.button(Icon.commandAttackSmall, Styles.defaulti, () -> Vars.ui.join.connect("x-core.fun", 6571)).uniformX().uniformY().fill();
+        portalTab.button(Icon.commandAttackSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6571)).uniformX().uniformY().fill();
+        portalTab.button(Icon.wavesSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6572)).uniformX().uniformY().fill();
+        portalTab.button(Icon.turretSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6573)).uniformX().uniformY().fill();
+        portalTab.button(Icon.redditAlienSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6574)).uniformX().uniformY().fill();
         portalTab.visibility = (() -> !hideAll && showPortalTab);
 
         //Generate karma info

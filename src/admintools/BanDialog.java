@@ -13,6 +13,7 @@ public class BanDialog extends BaseDialog {
     private static final JsonReader jsonReader = new JsonReader();
     public String reason;
     public String banTime = "0";
+    public boolean rollback = false;
     public JsonValue json;
 
     public BanDialog(String content) {
@@ -39,6 +40,7 @@ public class BanDialog extends BaseDialog {
             table.add("Ban duration(1d, 1h30m, etc): ").padRight(8f);
             table.field(null, value -> banTime = value);
             table.row();
+            table.check("Rollback", rollback, (value) -> rollback = value);
             cont.row();
             cont.add(table);
         });
@@ -62,6 +64,11 @@ public class BanDialog extends BaseDialog {
 
             json.get("reason").set(reason);
             json.get("duration").set(banTime);
+
+            if (rollback) {
+                Call.sendChatMessage("/rollback " + json.getInt("pid"));
+            }
+
             Call.serverPacketReliable("take_ban_data", json.toJson(JsonWriter.OutputType.json));
             hide();
         });
