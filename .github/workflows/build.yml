@@ -17,9 +17,10 @@ jobs:
       with:
         java-version: 17
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+      uses: amyu/setup-android@v4
       with:
-        packages: "platform-tools build-tools"
+        build-tools-version: 30.0.1
+        sdk-version: 26
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
     - name: Build mod jar
