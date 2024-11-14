@@ -25,7 +25,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
     - name: Build mod jar
-      run: ./gradlew deploy
+      run: ./gradlew build
     - name: Upload built jar file
       uses: actions/upload-artifact@v4.4.3
       with:

@@ -1,12 +1,14 @@
 package admintools;
 
 import arc.Core;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.input.KeyCode;
 import arc.math.geom.Rect;
 import arc.scene.event.InputEvent;
 import arc.scene.event.InputListener;
 import arc.scene.event.Touchable;
+import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
 import arc.struct.Seq;
 import arc.util.Align;
@@ -33,6 +35,18 @@ public class UIController extends InputListener {
     public boolean showHistory = false;
     public boolean showPortalTab = false;
 
+    public static ServerInfo[] servers = {
+            new ServerInfo("MiniPvP", 6567),
+            new ServerInfo("MiniSurvival", 6568),
+            new ServerInfo("MiniHexed", 6569),
+            new ServerInfo("Siege", 6570),
+            new ServerInfo("Siege NoSchem", 6575),
+            new ServerInfo("MiniAttack", 6571),
+            new ServerInfo("The Last Standing", 6572),
+            new ServerInfo("Zone Capture", 6573),
+            new ServerInfo("Red VS Blue", 6574)
+    };
+
     public static void connect(int port) {
         Vars.player.name(Core.settings.getString("name"));
         ui.join.connect("128.140.88.66", port);
@@ -47,22 +61,19 @@ public class UIController extends InputListener {
 
         Core.scene.add(container);
 
-        //Generate Portal tab
-        portalTab.button(Icon.modePvpSmall, Styles.defaulti, () -> connect(6567)).uniformX().uniformY().fill();
-        portalTab.button(Icon.modeSurvivalSmall, Styles.defaulti, () ->connect(6568)).uniformX().uniformY().fill();
-        portalTab.row();
-        portalTab.button(Icon.planetSmall, Styles.defaulti, () ->connect(6569)).uniformX().uniformY().fill();
-        portalTab.button(Icon.modeAttackSmall, Styles.defaulti, () ->connect(6570)).uniformX().uniformY().fill();
-        portalTab.button(Icon.modeAttackSmall, Styles.defaulti, () ->connect(6575)).uniformX().uniformY().fill();
-        portalTab.row();
-        portalTab.button(Icon.starSmall, Styles.defaulti, () ->connect(6572)).uniformX().uniformY().fill();
-        portalTab.button(Icon.commandAttackSmall, Styles.defaulti, () ->connect(6571)).uniformX().uniformY().fill();
-        portalTab.button(Icon.wavesSmall, Styles.defaulti, () ->connect(6572)).uniformX().uniformY().fill();
-        portalTab.row();
-        portalTab.button(Icon.turretSmall, Styles.defaulti, () ->connect(6573)).uniformX().uniformY().fill();
-        portalTab.button(Icon.redditAlienSmall, Styles.defaulti, () ->connect(6574)).uniformX().uniformY().fill();
+        Table st = new Table();
+        st.defaults().pad(1).fillX().height(20);
 
-        portalTab.visibility = (() -> !hideAll && showPortalTab);
+        for(ServerInfo server : servers) {
+            var lbl = st.add(server.name).get();
+            var listener = lbl.clicked(() -> connect(server.port));
+
+            lbl.update(() -> lbl.setColor(listener.isOver() ? Color.gray : Color.white));
+            st.row();
+        }
+
+        portalTab.add(st);
+        portalTab.visibility = () -> !hideAll && showPortalTab;
 
         //Generate karma info
         karma.row();
@@ -125,3 +136,12 @@ public class UIController extends InputListener {
     }
 }
 
+class ServerInfo {
+    String name;
+    int port;
+
+    ServerInfo(String name, int port) {
+        this.name = name;
+        this.port = port;
+    }
+}
