@@ -51,6 +51,8 @@ dependencies {
 
 tasks {
     withType<Jar> {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
         from(rootDir) {
             include("mod.json")
         }
