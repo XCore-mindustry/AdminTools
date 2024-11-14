@@ -43,13 +43,13 @@ public class AdminTools extends Mod {
             }
         });
 
-        if (Vars.mobile) return;
+        //if (Vars.mobile) return;
 
-        netClient.addPacketHandler("tilelogger_history_tile", content -> {
-            HistoryEntry[] stack = JsonIO.read(HistoryEntry[].class, content);
-            if (stack == null) return;
-            HistoryFrame.update(stack);
-        });
+        //netClient.addPacketHandler("tilelogger_history_tile", content -> {
+        //    HistoryEntry[] stack = JsonIO.read(HistoryEntry[].class, content);
+        //    if (stack == null) return;
+        //    HistoryFrame.update(stack);
+        //});
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
             ui = new UIController();
