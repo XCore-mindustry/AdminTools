@@ -33,6 +33,11 @@ public class UIController extends InputListener {
     public boolean showHistory = false;
     public boolean showPortalTab = false;
 
+    public static void connect(int port) {
+        Vars.player.name(Core.settings.getString("name"));
+        ui.join.connect("128.140.88.66", port);
+    }
+
     public UIController() {
         container.setFillParent(true);
         container.touchable = Touchable.childrenOnly;
@@ -43,17 +48,20 @@ public class UIController extends InputListener {
         Core.scene.add(container);
 
         //Generate Portal tab
-        portalTab.button(Icon.modePvpSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6567)).uniformX().uniformY().fill();
-        portalTab.button(Icon.modeSurvivalSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6568)).uniformX().uniformY().fill();
+        portalTab.button(Icon.modePvpSmall, Styles.defaulti, () -> connect(6567)).uniformX().uniformY().fill();
+        portalTab.button(Icon.modeSurvivalSmall, Styles.defaulti, () ->connect(6568)).uniformX().uniformY().fill();
         portalTab.row();
-        portalTab.button(Icon.planetSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6569)).uniformX().uniformY().fill();
-        portalTab.button(Icon.modeAttackSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6570)).uniformX().uniformY().fill();
-        portalTab.button(Icon.starSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6572)).uniformX().uniformY().fill();
+        portalTab.button(Icon.planetSmall, Styles.defaulti, () ->connect(6569)).uniformX().uniformY().fill();
+        portalTab.button(Icon.modeAttackSmall, Styles.defaulti, () ->connect(6570)).uniformX().uniformY().fill();
+        portalTab.button(Icon.modeAttackSmall, Styles.defaulti, () ->connect(6575)).uniformX().uniformY().fill();
         portalTab.row();
-        portalTab.button(Icon.commandAttackSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6571)).uniformX().uniformY().fill();
-        portalTab.button(Icon.wavesSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6572)).uniformX().uniformY().fill();
-        portalTab.button(Icon.turretSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6573)).uniformX().uniformY().fill();
-        portalTab.button(Icon.redditAlienSmall, Styles.defaulti, () -> ui.join.connect("x-core.fun", 6574)).uniformX().uniformY().fill();
+        portalTab.button(Icon.starSmall, Styles.defaulti, () ->connect(6572)).uniformX().uniformY().fill();
+        portalTab.button(Icon.commandAttackSmall, Styles.defaulti, () ->connect(6571)).uniformX().uniformY().fill();
+        portalTab.button(Icon.wavesSmall, Styles.defaulti, () ->connect(6572)).uniformX().uniformY().fill();
+        portalTab.row();
+        portalTab.button(Icon.turretSmall, Styles.defaulti, () ->connect(6573)).uniformX().uniformY().fill();
+        portalTab.button(Icon.redditAlienSmall, Styles.defaulti, () ->connect(6574)).uniformX().uniformY().fill();
+
         portalTab.visibility = (() -> !hideAll && showPortalTab);
 
         //Generate karma info
