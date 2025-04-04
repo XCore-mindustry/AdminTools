@@ -36,20 +36,20 @@ public class UIController extends InputListener {
     public boolean showPortalTab = false;
 
     public static ServerInfo[] servers = {
-            new ServerInfo("MiniPvP", 6567),
-            new ServerInfo("MiniSurvival", 6568),
-            new ServerInfo("MiniHexed", 6569),
-            new ServerInfo("Siege", 6570),
-            new ServerInfo("Siege NoSchem", 6575),
-            new ServerInfo("MiniAttack", 6571),
-            new ServerInfo("The Last Standing", 6572),
-            new ServerInfo("Zone Capture", 6573),
-            new ServerInfo("Red VS Blue", 6574)
+            new ServerInfo("MiniPvP", 52001),
+            new ServerInfo("MiniSurvival", 52002),
+            new ServerInfo("MiniAttack", 52003),
+            new ServerInfo("Siege", 52004),
+            new ServerInfo("The Last Standing", 52005),
+            new ServerInfo("MiniHexed", 52006),
+            new ServerInfo("Red VS Blue", 52007),
+			new ServerInfo("Asthosus", 52008),
+			new ServerInfo("Railway", 52009),
     };
 
     public static void connect(int port) {
         Vars.player.name(Core.settings.getString("name"));
-        ui.join.connect("128.140.88.66", port);
+        ui.join.connect("176.9.86.158", port);
     }
 
     public UIController() {
