@@ -4,7 +4,7 @@
   "author": "OSPx && Kowkonya && TheRadioactiveBanana",
   "main": "admintools.AdminTools",
   "description": "XCore Admin Mod",
-  "version": "1.4",
+  "version": "1.5",
   "minGameVersion": "146",
   "hidden": true,
   "java": true
