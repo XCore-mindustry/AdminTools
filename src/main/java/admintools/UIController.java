@@ -123,11 +123,11 @@ public class UIController extends InputListener {
                 showHistory = !showHistory;
                 yield true;
             }
-            case c -> {
+            case k -> {
                 showKarma = !showKarma;
                 yield true;
             }
-            case t -> {
+            case p -> {
                 showPortalTab = !showPortalTab;
                 yield true;
             }
