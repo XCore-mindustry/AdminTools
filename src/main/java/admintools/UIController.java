@@ -44,7 +44,7 @@ public class UIController extends InputListener {
             new ServerInfo("MiniHexed", 7004),
             new ServerInfo("Red VS Blue", 7006),
 			new ServerInfo("Asthosus", 7002),
-			new ServerInfo("Railway", 7005),
+			new ServerInfo("Renale Battles", 7005),
     };
 
     public static void connect(int port) {
