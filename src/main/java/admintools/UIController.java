@@ -36,15 +36,15 @@ public class UIController extends InputListener {
     public boolean showPortalTab = false;
 
     public static ServerInfo[] servers = {
-            new ServerInfo("MiniPvP", 7001),
-            new ServerInfo("MiniSurvival", 7008),
-            new ServerInfo("MiniAttack", 7003),
+            new ServerInfo("Mini PvP", 7001),
+            new ServerInfo("Mini Attack [v8]", 7005),
+            new ServerInfo("Mini Attack", 7003),
+            new ServerInfo("Mini Survival", 7008),
             new ServerInfo("Siege", 7007),
             new ServerInfo("The Last Standing", 7009),
-            new ServerInfo("MiniHexed", 7004),
+            new ServerInfo("Mini Hexed", 7004),
             new ServerInfo("Red VS Blue", 7006),
 			new ServerInfo("Asthosus", 7002),
-			new ServerInfo("Renale Battles", 7005),
     };
 
     public static void connect(int port) {
