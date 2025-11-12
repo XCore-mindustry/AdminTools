@@ -35,17 +35,19 @@ public class KarmaDetector {
         });
 
         Events.on(EventType.BlockBuildEndEvent.class, e -> {
-            if (!e.unit.isPlayer()) {
-                return;
+            if (!(e.unit == null)) {
+                if (!e.unit.isPlayer()) {
+                    return;
+                }
+                String name = e.unit.getPlayer().name;
+                if (e.breaking) {
+                    blocksDestroy.put(name, blocksDestroy.get(name) == null ? 1 : blocksDestroy.get(name) + 1);
+                } else {
+                    blocksBuild.put(name, blocksBuild.get(name) == null ? 1 : blocksBuild.get(name) + 1);
+                }
+                updateList();
+                update();
             }
-            String name = e.unit.getPlayer().name;
-            if (e.breaking) {
-                blocksDestroy.put(name, blocksDestroy.get(name) == null ? 1 : blocksDestroy.get(name) + 1);
-            } else {
-                blocksBuild.put(name, blocksBuild.get(name) == null ? 1 : blocksBuild.get(name) + 1);
-            }
-            updateList();
-            update();
         });
     }
 
