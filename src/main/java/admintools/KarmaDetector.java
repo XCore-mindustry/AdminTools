@@ -35,9 +35,6 @@ public class KarmaDetector {
         });
 
         Events.on(EventType.BlockBuildEndEvent.class, e -> {
-
-            
-            
             if (e.unit == null || !e.unit.isPlayer()) {
                 return;
             }
