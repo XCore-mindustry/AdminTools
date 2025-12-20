@@ -37,9 +37,9 @@ public class UIController extends InputListener {
 
     public static ServerInfo[] servers = {
             new ServerInfo("Mini PvP", 7001),
-            new ServerInfo("Mini Attack [v8]", 7005),
             new ServerInfo("Mini Attack", 7003),
             new ServerInfo("Mini Survival", 7008),
+            new ServerInfo("Test server", 7005),
             new ServerInfo("Siege", 7007),
             new ServerInfo("The Last Standing", 7009),
             new ServerInfo("Mini Hexed", 7004),

@@ -22,9 +22,9 @@ public class AdminTools extends Mod {
         netClient.addPacketHandler("give_ban_data", BanDialog::new);
         netClient.addPacketHandler("adm_mod_begin", content ->
                 Call.serverPacketReliable("adm_mod_end", Vars.mods.getMod("admintools-mod").meta.version));
-        netClient.addPacketHandler("adm_mod_votekick", content -> {
-            if (Core.settings.getBool("admintools-notifications")) for (int i = 0; i < 7; i++) Sounds.message.play(40);
-        });
+//        netClient.addPacketHandler("adm_mod_votekick", content -> {
+//            if (Core.settings.getBool("admintools-notifications")) for (int i = 0; i < 7; i++) Sounds.message.play(40);
+//        });
 
         Events.on(EventType.ClientChatEvent.class, e -> {
             String message = e.message;
@@ -54,7 +54,7 @@ public class AdminTools extends Mod {
         Events.on(EventType.ClientLoadEvent.class, e -> {
             ui = new UIController();
 
-            Vars.ui.settings.addCategory("AdminTools", new TextureRegionDrawable(Icon.admin.getRegion()), t -> {
+            Vars.ui.settings.addCategory("AdminTools (Xcore)", new TextureRegionDrawable(Icon.admin.getRegion()), t -> {
                 t.check("Hide all", ui.hideAll, b -> ui.hideAll = b).left().row();
                 t.check("Karma", ui.showKarma, b -> ui.showKarma = b).left().row();
                 t.check("History", ui.showHistory, b -> ui.showHistory = b).left().row();
