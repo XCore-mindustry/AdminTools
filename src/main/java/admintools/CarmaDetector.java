@@ -36,9 +36,11 @@ public class CarmaDetector {
         });
 
         Events.on(EventType.BlockBuildEndEvent.class, e -> {
-            if (!e.unit.isPlayer()) {
+            if (e.unit == null || !e.unit.isPlayer())
                 return;
-            }
+
+            if (e.unit.getPlayer() == null) return;
+
             String name = e.unit.getPlayer().name;
             if (e.breaking) {
                 blocksDestroy.put(name, blocksDestroy.get(name) == null ? 1 : blocksDestroy.get(name) + 1);
