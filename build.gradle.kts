@@ -5,7 +5,7 @@ import com.xpdustry.toxopid.spec.ModMetadata
 
 plugins {
     java
-    id("com.xpdustry.toxopid") version "4.1.0"
+    id("com.xpdustry.toxopid") version "4.1.2"
 }
 
 project.version  = "1.0.0"
