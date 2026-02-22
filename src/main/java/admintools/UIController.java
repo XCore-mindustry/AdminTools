@@ -12,6 +12,7 @@ import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
 import arc.struct.Seq;
 import arc.util.Align;
+import arc.util.Strings;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Blocks;
@@ -55,37 +56,36 @@ public class UIController extends InputListener {
         Core.scene.add(container);
 
         Table st = new Table();
-        st.defaults().pad(1).fillX().height(20);
+        st.defaults().pad(1).fillX();
 
-        List<ServerInfo> servers = new ArrayList<>();
+        for(int port = 7000; port <= 7025; port++) {
+            int currentPort = port;
 
-        for(int port = 7000; port < 7025; port++) {
-            servers.add(new ServerInfo("Server " + port, port));
-        }
+            Table rowWrapper = new Table();
 
-        for(ServerInfo server : servers) {
-            var lbl = st.add("[lightgray]Survey " + server.port + "...[]").get();
-            var listener = lbl.clicked(() -> connect(server.port));
+            var lbl = rowWrapper.add("[lightgray]Survey " + currentPort + "...[]").height(20).get();
+            var listener = lbl.clicked(() -> connect(currentPort));
 
             lbl.update(() -> lbl.setColor(listener.isOver() ? Color.gray : Color.white));
-            st.row();
 
-            Vars.net.pingHost(IP, server.port,
+            st.add(rowWrapper).row();
+
+            Vars.net.pingHost(IP, currentPort,
                 host -> {
-                    lbl.setText(host.name);
+                    String cleanName = Strings.stripColors(host.name);
+
+                    cleanName = cleanName.replaceAll("[\uE000-\uF8FF]", "");
+
+                    cleanName = cleanName.replace("Core >", "").replace("Core>", "");
+
+                    cleanName = cleanName.replaceAll("\\s+", " ").trim();
+
+                    lbl.setText(cleanName);
                 },
                 exception -> {
-                    lbl.setText("[red][Offline][] " + server.name);
+                    rowWrapper.remove();
                 }
             );
-        }
-
-        for(ServerInfo server : servers) {
-            var lbl = st.add(server.name).get();
-            var listener = lbl.clicked(() -> connect(server.port));
-
-            lbl.update(() -> lbl.setColor(listener.isOver() ? Color.gray : Color.white));
-            st.row();
         }
 
         portalTab.add(st);
@@ -149,15 +149,5 @@ public class UIController extends InputListener {
             }
             default -> super.keyDown(event, keyCode);
         };
-    }
-}
-
-class ServerInfo {
-    String name;
-    int port;
-
-    ServerInfo(String name, int port) {
-        this.name = name;
-        this.port = port;
     }
 }
