@@ -12,8 +12,8 @@ val metadata = ModMetadata.fromJson(project.file("mod.json"))
 version = metadata.version
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
 }
 
 repositories {
