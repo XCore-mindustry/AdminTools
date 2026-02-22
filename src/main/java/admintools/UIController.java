@@ -62,25 +62,38 @@ public class UIController extends InputListener {
             int currentPort = port;
 
             Table rowWrapper = new Table();
+            rowWrapper.left();
 
-            var lbl = rowWrapper.add("[lightgray]Survey " + currentPort + "...[]").height(20).get();
+            // Створюємо Label
+            var lbl = rowWrapper.add("[lightgray]Survey " + currentPort + "...[]")
+                .align(Align.left)
+                .padLeft(12)
+                .growX()
+                .get();
+
             var listener = lbl.clicked(() -> connect(currentPort));
 
             lbl.update(() -> lbl.setColor(listener.isOver() ? Color.gray : Color.white));
 
-            st.add(rowWrapper).row();
+            st.add(rowWrapper).fillX().row();
 
             Vars.net.pingHost(IP, currentPort,
                 host -> {
-                    String cleanName = Strings.stripColors(host.name);
+                    String name = host.name;
 
-                    cleanName = cleanName.replaceAll("[\uE000-\uF8FF]", "");
+                    name = Strings.stripColors(name);
 
-                    cleanName = cleanName.replace("Core >", "").replace("Core>", "");
+                    name = name.replaceAll("(?i)core", "");
 
-                    cleanName = cleanName.replaceAll("\\s+", " ").trim();
+                    name = name.replaceAll("[\uE000-\uF8FF]", "");
 
-                    lbl.setText(cleanName);
+                    name = name.replaceFirst("^[^a-zA-Z0-9]+", "");
+
+                    if (name.startsWith("X ")) {
+                        name = name.substring(2);
+                    }
+
+                    lbl.setText(name.trim());
                 },
                 exception -> {
                     rowWrapper.remove();
