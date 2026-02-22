@@ -40,18 +40,21 @@ dependencies {
 tasks {
     withType<Jar> {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
         from(rootDir) {
             include("mod.json")
         }
+    }
 
+    mergeJar {
         doLast {
-            val modName = project.rootDir.name
-            val dexedJar = project.file("build/libs/$modName-$version-dexed.jar")
-            val finalJar = project.file("build/libs/$modName.jar")
+            val dexedJar = outputs.files.singleFile
+            val finalJar = project.file("build/libs/${project.rootDir.name}.jar")
 
             if (dexedJar.exists()) {
-                dexedJar.renameTo(finalJar)
+                dexedJar.copyTo(finalJar, overwrite = true)
+                println("✅ Android-ready JAR created: ${finalJar.name}")
+            } else {
+                println("⚠️ Dexed jar not found!")
             }
         }
     }
