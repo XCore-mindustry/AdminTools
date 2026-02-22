@@ -1,11 +1,11 @@
 {
-  "displayName": "Admin Tools (Xcore)",
+  "displayName": "Admin Tools (XCore)",
   "name": "admintools-mod",
   "author": "OSPx && Kowkonya && TheRadioactiveBanana && BRamil",
   "main": "admintools.AdminTools",
   "description": "XCore Admin Mod",
-  "version": "1.7.0",
-  "minGameVersion": "154",
+  "version": "1.8.0",
+  "minGameVersion": "155.3",
   "hidden": true,
   "java": true
 }

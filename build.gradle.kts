@@ -5,14 +5,15 @@ import com.xpdustry.toxopid.spec.ModMetadata
 
 plugins {
     java
-    id("com.xpdustry.toxopid") version "4.1.0"
+    id("com.xpdustry.toxopid") version "4.1.2"
 }
 
-project.version  = "1.0.0"
+val metadata = ModMetadata.fromJson(project.file("mod.json"))
+version = metadata.version
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -21,33 +22,20 @@ repositories {
     anukeZelaux()
 }
 
-val metadata = ModMetadata.fromJson(project.file("mod.json"))
-version = metadata.version
-
-val jabelVersion = "93fde537c7"
-
 toxopid {
     compileVersion.set("v${metadata.minGameVersion}")
     platforms.set(setOf(ModPlatform.ANDROID, ModPlatform.DESKTOP))
 }
 
-allprojects {
-    tasks.withType<JavaCompile>().configureEach {
-        options.encoding = "UTF-8"
-        options.compilerArgs.addAll(listOf("--release", "8"))
-    }
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.compilerArgs.addAll(listOf("--release", "17"))
 }
 
 dependencies {
     compileOnly(toxopid.dependencies.mindustryCore)
     compileOnly(toxopid.dependencies.arcCore)
-
-    annotationProcessor("com.github.Anuken:jabel:$jabelVersion")
 }
-
-//tasks.runMindustryDesktop {
-//    mods.from(project.file("./libs/AdminTools-${version}.jar"))
-//}
 
 tasks {
     withType<Jar> {
@@ -58,13 +46,17 @@ tasks {
         }
 
         doLast {
-            val name = project.rootDir.name
-            project.file("build/libs/$name-$version-dexed.jar").renameTo(project.file("build/libs/$name.jar"))
+            val modName = project.rootDir.name
+            val dexedJar = project.file("build/libs/$modName-$version-dexed.jar")
+            val finalJar = project.file("build/libs/$modName.jar")
+
+            if (dexedJar.exists()) {
+                dexedJar.renameTo(finalJar)
+            }
         }
     }
-}
 
-
-tasks.build {
-    dependsOn(tasks.mergeJar)
+    build {
+        dependsOn(mergeJar)
+    }
 }
