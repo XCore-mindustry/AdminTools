@@ -18,6 +18,9 @@ import mindustry.content.Blocks;
 import mindustry.gen.Icon;
 import mindustry.ui.Styles;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static arc.Core.camera;
 import static mindustry.Vars.renderer;
 import static mindustry.Vars.ui;
@@ -35,21 +38,11 @@ public class UIController extends InputListener {
     public boolean showHistory = false;
     public boolean showPortalTab = false;
 
-    public static ServerInfo[] servers = {
-            new ServerInfo("Mini PvP", 7001),
-            new ServerInfo("Mini Attack", 7003),
-            new ServerInfo("Mini Survival", 7008),
-            new ServerInfo("Test server", 7005),
-            new ServerInfo("Siege", 7007),
-            new ServerInfo("The Last Standing", 7009),
-            new ServerInfo("Mini Hexed", 7004),
-            new ServerInfo("Red VS Blue", 7006),
-			new ServerInfo("Asthosus", 7002),
-    };
+    public static final String IP = "62.30.47.117";
 
     public static void connect(int port) {
         Vars.player.name(Core.settings.getString("name"));
-        ui.join.connect("62.30.47.117", port);
+        ui.join.connect(IP, port);
     }
 
     public UIController() {
@@ -63,6 +56,29 @@ public class UIController extends InputListener {
 
         Table st = new Table();
         st.defaults().pad(1).fillX().height(20);
+
+        List<ServerInfo> servers = new ArrayList<>();
+
+        for(int port = 7000; port < 7025; port++) {
+            servers.add(new ServerInfo("Server " + port, port));
+        }
+
+        for(ServerInfo server : servers) {
+            var lbl = st.add("[lightgray]Survey " + server.port + "...[]").get();
+            var listener = lbl.clicked(() -> connect(server.port));
+
+            lbl.update(() -> lbl.setColor(listener.isOver() ? Color.gray : Color.white));
+            st.row();
+
+            Vars.net.pingHost(IP, server.port,
+                host -> {
+                    lbl.setText(host.name);
+                },
+                exception -> {
+                    lbl.setText("[red][Offline][] " + server.name);
+                }
+            );
+        }
 
         for(ServerInfo server : servers) {
             var lbl = st.add(server.name).get();
