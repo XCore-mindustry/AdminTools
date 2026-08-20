@@ -12,8 +12,8 @@ val metadata = ModMetadata.fromJson(project.file("mod.json"))
 version = metadata.version
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -29,7 +29,7 @@ toxopid {
 
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
-    options.compilerArgs.addAll(listOf("--release", "16"))
+    options.compilerArgs.addAll(listOf("--release", "17"))
 }
 
 dependencies {
