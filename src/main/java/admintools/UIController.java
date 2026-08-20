@@ -39,7 +39,7 @@ public class UIController extends InputListener {
     public boolean showHistory = false;
     public boolean showPortalTab = false;
 
-    public static final String IP = "62.30.47.117";
+    public static final String IP = "159.195.205.212";
 
     public static void connect(int port) {
         Vars.player.name(Core.settings.getString("name"));
