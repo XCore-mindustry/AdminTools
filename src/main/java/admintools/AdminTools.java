@@ -43,22 +43,26 @@ public class AdminTools extends Mod {
             }
         });
 
-        //if (Vars.mobile) return;
-
-        //netClient.addPacketHandler("tilelogger_history_tile", content -> {
-        //    HistoryEntry[] stack = JsonIO.read(HistoryEntry[].class, content);
-        //    if (stack == null) return;
-        //    HistoryFrame.update(stack);
-        //});
+        netClient.addPacketHandler("tilelogger_history_tile", content -> {
+            HistoryEntry[] stack = JsonIO.read(HistoryEntry[].class, content);
+            if (stack == null) return;
+            HistoryFrame.update(stack);
+        });
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
             ui = new UIController();
 
             Vars.ui.settings.addCategory("AdminTools (Xcore)", new TextureRegionDrawable(Icon.admin.getRegion()), t -> {
-                t.check("Hide all", ui.hideAll, b -> ui.hideAll = b).left().row();
-                t.check("Karma", ui.showKarma, b -> ui.showKarma = b).left().row();
-                t.check("History", ui.showHistory, b -> ui.showHistory = b).left().row();
-                t.check("Portal", ui.showPortalTab, b -> ui.showPortalTab = b).left().row();
+                t.check("Hide all", ui.isHideAll(), ui::setHideAll).left().row();
+                t.check("Karma", ui.karmaWindow.visible, b -> {
+                    if (b) ui.karmaWindow.show(); else ui.karmaWindow.hide();
+                }).left().row();
+                t.check("History", ui.historyWindow.visible, b -> {
+                    if (b) ui.historyWindow.show(); else ui.historyWindow.hide();
+                }).left().row();
+                t.check("Portal", ui.portalWindow.visible, b -> {
+                    if (b) ui.portalWindow.show(); else ui.portalWindow.hide();
+                }).left().row();
                 t.check("Sounds Notifications", Core.settings.getBool("admintools-notifications"),
                     b -> Core.settings.put("admintools-notifications", b)).left().row();
             });
