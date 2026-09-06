@@ -244,7 +244,7 @@ public class AuthManager {
         if (isRequestPending) return;
 
         if (password == null || password.length() < MIN_PASSWORD_LENGTH) {
-            lastError = admintools.I18N.format("admintools.auth.pass_too_short", MIN_PASSWORD_LENGTH);
+            lastError = arc.Core.bundle.format("admintools.auth.pass_too_short", MIN_PASSWORD_LENGTH);
             if (AuthDialog.current != null) {
                 AuthDialog.current.setError(lastError);
             }
@@ -292,7 +292,7 @@ public class AuthManager {
                 isRequestPending = false;
                 pendingRequestId = -1;
                 pendingRequestEpoch = -1L;
-                lastError = admintools.I18N.get("admintools.auth.timeout");
+                lastError = arc.Core.bundle.get("admintools.auth.timeout");
                 if (AuthDialog.current != null) {
                     AuthDialog.current.setError(lastError);
                 }
@@ -314,7 +314,7 @@ public class AuthManager {
         pendingRequestId = -1;
         pendingRequestEpoch = -1L;
         lastError = "";
-        ToastManager.info(admintools.I18N.get("admintools.auth.logged_out"));
+        ToastManager.info(arc.Core.bundle.get("admintools.auth.logged_out"));
     }
 
     private void onAuthStatus(AuthStatusPacket p) {
@@ -343,7 +343,7 @@ public class AuthManager {
                 AuthDialog.current.rebuildUI();
             }
         } else if (p.error != null && !p.error.isEmpty()) {
-            ToastManager.error(admintools.I18N.format("admintools.auth.link_error", p.error));
+            ToastManager.error(arc.Core.bundle.format("admintools.auth.link_error", p.error));
         }
     }
 
@@ -372,7 +372,7 @@ public class AuthManager {
             Core.settings.put("admintools-auth-autologin", pendingAutoLogin);
             Core.settings.saveValues();
 
-            ToastManager.success(admintools.I18N.get("admintools.auth.success"));
+            ToastManager.success(arc.Core.bundle.get("admintools.auth.success"));
             if (AuthDialog.current != null) {
                 AuthDialog.current.hide();
             }
@@ -381,18 +381,18 @@ public class AuthManager {
             Core.settings.remove("admintools-auth-token");
             Core.settings.saveValues();
 
-            lastError = admintools.I18N.get("admintools.auth.token_invalid");
+            lastError = arc.Core.bundle.get("admintools.auth.token_invalid");
             ToastManager.error(lastError);
             if (AuthDialog.current != null) {
                 AuthDialog.current.setError(lastError);
             }
         } else {
             lastError = switch (resStatus) {
-                case "WRONG_PASSWORD" -> admintools.I18N.get("admintools.auth.wrong_password");
-                case "PASSWORD_TOO_SHORT" -> admintools.I18N.format("admintools.auth.pass_too_short", MIN_PASSWORD_LENGTH);
-                case "DISCORD_APPROVAL_REQUIRED" -> admintools.I18N.get("admintools.auth.no_discord_role");
-                case "RATE_LIMITED" -> admintools.I18N.get("admintools.auth.rate_limited");
-                default -> admintools.I18N.format("admintools.auth.general_error", resStatus);
+                case "WRONG_PASSWORD" -> arc.Core.bundle.get("admintools.auth.wrong_password");
+                case "PASSWORD_TOO_SHORT" -> arc.Core.bundle.format("admintools.auth.pass_too_short", MIN_PASSWORD_LENGTH);
+                case "DISCORD_APPROVAL_REQUIRED" -> arc.Core.bundle.get("admintools.auth.no_discord_role");
+                case "RATE_LIMITED" -> arc.Core.bundle.get("admintools.auth.rate_limited");
+                default -> arc.Core.bundle.format("admintools.auth.general_error", resStatus);
             };
 
             ToastManager.error(lastError);

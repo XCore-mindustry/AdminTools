@@ -91,7 +91,7 @@ public class QuickDock extends Table {
         ImageButton authBtn = new ImageButton(Icon.lock, LucidTheme.glassImageButtonStyle());
         authBtn.clicked(() -> {
             if (AuthManager.get().getStatus() == AuthManager.Status.AUTHENTICATED) {
-                ConfirmDialog.show(admintools.I18N.get("admintools.auth.title"), admintools.I18N.get("admintools.auth.already_authed"), () -> {
+                ConfirmDialog.show("@admintools.auth.title", "@admintools.auth.already_authed", () -> {
                     AuthManager.get().logout();
                 });
             } else {

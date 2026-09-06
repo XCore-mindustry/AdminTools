@@ -51,7 +51,7 @@ public class AuthDialog extends Dialog {
         titleBar.margin(8f, 14f, 8f, 10f);
 
         titleBar.image(Icon.admin).size(22f).color(Pal.accent).padRight(8f);
-        titleBar.add(admintools.I18N.get("admintools.auth.title")).color(Pal.accent).growX().left();
+        titleBar.add("@admintools.auth.title").color(Pal.accent).growX().left();
 
         ImageButton closeBtn = new ImageButton(Icon.cancel, Styles.clearNonei);
         closeBtn.clicked(this::hide);
@@ -91,9 +91,9 @@ public class AuthDialog extends Dialog {
         if (!isLinked) {
             if (activeCode != null && !activeCode.isEmpty()) {
                 // Seamless Linking Card: Active code received
-                form.add(admintools.I18N.get("admintools.auth.link_title")).left().padBottom(6f).row();
+                form.add("@admintools.auth.link_title").left().padBottom(6f).row();
 
-                Label instruct = new Label(admintools.I18N.get("admintools.auth.link_instruct"));
+                Label instruct = new Label("@admintools.auth.link_instruct");
                 instruct.setWrap(true);
                 instruct.setFontScale(0.85f);
                 instruct.setColor(LucidTheme.textDim);
@@ -108,10 +108,10 @@ public class AuthDialog extends Dialog {
                 cmdLbl.setFontScale(1.05f);
                 codeBox.add(cmdLbl).growX().left().padRight(8f);
 
-                TextButton copyBtn = new TextButton(admintools.I18N.get("admintools.auth.copy"), LucidTheme.flatTextButtonStyle());
+                TextButton copyBtn = new TextButton("@admintools.auth.copy", LucidTheme.flatTextButtonStyle());
                 copyBtn.clicked(() -> {
                     Core.app.setClipboardText("/link " + activeCode);
-                    ToastManager.info(admintools.I18N.get("admintools.auth.copied"));
+                    ToastManager.info(Core.bundle.get("admintools.auth.copied"));
                 });
                 codeBox.add(copyBtn).size(Scl.scl(100f), Scl.scl(32f));
 
@@ -123,40 +123,40 @@ public class AuthDialog extends Dialog {
                 timerLbl.update(() -> {
                     long rem = (AuthManager.get().getActiveLinkExpiresAt() - System.currentTimeMillis()) / 1000L;
                     if (rem <= 0) {
-                        timerLbl.setText(admintools.I18N.get("admintools.auth.code_expired"));
+                        timerLbl.setText(Core.bundle.get("admintools.auth.code_expired"));
                     } else {
                         long mins = rem / 60;
                         long secs = rem % 60;
-                        timerLbl.setText(admintools.I18N.format("admintools.auth.code_valid_time", String.format("%02d", mins), String.format("%02d", secs)));
+                        timerLbl.setText(Core.bundle.format("admintools.auth.code_valid_time", String.format("%02d", mins), String.format("%02d", secs)));
                     }
                 });
                 form.add(timerLbl).center().padBottom(4f).row();
 
-                Label waitingLbl = new Label(admintools.I18N.get("admintools.auth.waiting_bot"));
+                Label waitingLbl = new Label("@admintools.auth.waiting_bot");
                 waitingLbl.setFontScale(0.85f);
                 form.add(waitingLbl).center().padBottom(8f).row();
 
                 buttons.margin(6f, 16f, 14f, 16f);
                 buttons.defaults().size(Scl.scl(120f), Scl.scl(38f)).pad(Scl.scl(6f));
-                buttons.button(admintools.I18N.get("admintools.cancel"), Styles.defaultt, () -> {
+                buttons.button("@cancel", Styles.defaultt, () -> {
                     AuthManager.get().clearActiveLinkCode();
                     rebuildUI();
                 });
             } else {
                 // Link request prompt
-                form.add(admintools.I18N.get("admintools.auth.not_linked_title")).left().padBottom(8f).row();
+                form.add("@admintools.auth.not_linked_title").left().padBottom(8f).row();
 
-                Label desc = new Label(admintools.I18N.get("admintools.auth.not_linked_desc"));
+                Label desc = new Label("@admintools.auth.not_linked_desc");
                 desc.setWrap(true);
                 desc.setFontScale(0.85f);
                 desc.setColor(LucidTheme.textDim);
                 form.add(desc).growX().padBottom(16f).row();
 
                 // Request Link Code Button
-                TextButton linkBtn = new TextButton(admintools.I18N.get("admintools.auth.get_link_code"), LucidTheme.flatTextButtonStyle());
+                TextButton linkBtn = new TextButton("@admintools.auth.get_link_code", LucidTheme.flatTextButtonStyle());
                 linkBtn.clicked(() -> {
                     statusLabel.setColor(Pal.accent);
-                    statusLabel.setText(admintools.I18N.get("admintools.auth.generating_code"));
+                    statusLabel.setText(Core.bundle.get("admintools.auth.generating_code"));
                     AuthManager.get().requestDiscordLink();
                 });
                 form.add(linkBtn).size(Scl.scl(220f), Scl.scl(38f)).center().padBottom(8f).row();
@@ -165,16 +165,16 @@ public class AuthDialog extends Dialog {
 
                 buttons.margin(6f, 16f, 14f, 16f);
                 buttons.defaults().size(Scl.scl(120f), Scl.scl(38f)).pad(Scl.scl(6f));
-                buttons.button(admintools.I18N.get("admintools.close"), Styles.defaultt, this::hide);
+                buttons.button("@close", Styles.defaultt, this::hide);
             }
         } else {
             // Discord IS linked: render authentication form
             String discUser = AuthManager.get().getDiscordUsername();
-            String subtitle = discUser.isEmpty() ? admintools.I18N.get("admintools.auth.subtitle_default") : admintools.I18N.format("admintools.auth.linked_as", discUser);
+            String subtitle = discUser.isEmpty() ? Core.bundle.get("admintools.auth.subtitle_default") : Core.bundle.format("admintools.auth.linked_as", discUser);
             form.add(subtitle).color(LucidTheme.textDim).left().padBottom(8f).row();
 
             if (!AuthManager.get().hasDiscordAdmin()) {
-                Label noRole = new Label(admintools.I18N.get("admintools.auth.no_admin_role"));
+                Label noRole = new Label("@admintools.auth.no_admin_role");
                 noRole.setWrap(true);
                 noRole.setFontScale(0.8f);
                 form.add(noRole).growX().padBottom(8f).row();
@@ -188,7 +188,7 @@ public class AuthDialog extends Dialog {
             passwordField = new TextField("", Styles.defaultField);
             passwordField.setPasswordMode(!passwordVisible);
             passwordField.setPasswordCharacter('*');
-            passwordField.setMessageText(AuthManager.get().hasPassword() ? admintools.I18N.get("admintools.auth.pass_placeholder") : admintools.I18N.format("admintools.auth.create_pass_placeholder", AuthManager.MIN_PASSWORD_LENGTH));
+            passwordField.setMessageText(AuthManager.get().hasPassword() ? Core.bundle.get("admintools.auth.pass_placeholder") : Core.bundle.format("admintools.auth.create_pass_placeholder", AuthManager.MIN_PASSWORD_LENGTH));
 
             ImageButton eyeBtn = new ImageButton(passwordVisible ? Icon.eyeOff : Icon.eye, Styles.clearNonei);
             eyeBtn.clicked(() -> {
@@ -206,10 +206,10 @@ public class AuthDialog extends Dialog {
             Table checkTable = new Table();
             checkTable.left();
 
-            rememberBox = new CheckBox(admintools.I18N.get("admintools.auth.remember_device"));
+            rememberBox = new CheckBox("@admintools.auth.remember_device");
             rememberBox.setChecked(AuthManager.get().hasSavedCredentials());
 
-            autoLoginBox = new CheckBox(admintools.I18N.get("admintools.auth.auto_login"));
+            autoLoginBox = new CheckBox("@admintools.auth.auto_login");
             autoLoginBox.setChecked(AuthManager.get().isAutoLoginEnabled());
 
             checkTable.add(rememberBox).left().row();
@@ -226,8 +226,8 @@ public class AuthDialog extends Dialog {
             // Action Buttons
             buttons.margin(6f, 16f, 14f, 16f);
             buttons.defaults().size(Scl.scl(120f), Scl.scl(38f)).pad(Scl.scl(6f));
-            buttons.button(admintools.I18N.get("admintools.cancel"), Styles.defaultt, this::hide);
-            buttons.button(AuthManager.get().hasPassword() ? admintools.I18N.get("admintools.auth.login") : admintools.I18N.get("admintools.auth.create"), LucidTheme.flatTextButtonStyle(), this::submit);
+            buttons.button("@cancel", Styles.defaultt, this::hide);
+            buttons.button(AuthManager.get().hasPassword() ? "@admintools.auth.login" : "@admintools.auth.create", LucidTheme.flatTextButtonStyle(), this::submit);
 
             passwordField.keyDown(key -> {
                 if (key == KeyCode.enter) {
@@ -251,12 +251,12 @@ public class AuthDialog extends Dialog {
         String pass = passwordField.getText().trim();
         if (pass.length() < AuthManager.MIN_PASSWORD_LENGTH) {
             statusLabel.setColor(Pal.remove);
-            statusLabel.setText(admintools.I18N.format("admintools.auth.pass_too_short", AuthManager.MIN_PASSWORD_LENGTH));
+            statusLabel.setText(Core.bundle.format("admintools.auth.pass_too_short", AuthManager.MIN_PASSWORD_LENGTH));
             return;
         }
 
         statusLabel.setColor(Pal.accent);
-        statusLabel.setText(admintools.I18N.get("admintools.auth.authenticating"));
+        statusLabel.setText(Core.bundle.get("admintools.auth.authenticating"));
 
         boolean rem = rememberBox != null && rememberBox.isChecked();
         boolean auto = autoLoginBox != null && autoLoginBox.isChecked();

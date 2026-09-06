@@ -68,19 +68,19 @@ public class UIController {
 
         // 1. Karma Window
         karmaWindow = windowManager.createWindow(
-            WindowSpec.of("karma", I18N.get("admintools.window.karma"), Icon.hammer, 480f, 360f),
+            WindowSpec.of("karma", Core.bundle.get("admintools.window.karma"), Icon.hammer, 480f, 360f),
             win -> win.content(body -> body.add(KarmaDetector.buildView()).grow())
         );
 
         // 2. History Window
         historyWindow = windowManager.createWindow(
-            WindowSpec.of("history", I18N.get("admintools.window.history"), Icon.book, 520f, 360f),
+            WindowSpec.of("history", Core.bundle.get("admintools.window.history"), Icon.book, 520f, 360f),
             win -> win.content(body -> body.add(HistoryFrame.buildView()).grow())
         );
 
         // 3. Portal Window
         portalWindow = windowManager.createWindow(
-            WindowSpec.of("portal", I18N.get("admintools.window.portal"), Icon.host, 440f, 380f),
+            WindowSpec.of("portal", Core.bundle.get("admintools.window.portal"), Icon.host, 440f, 380f),
             win -> win.content(this::buildPortalContent)
         );
 
@@ -116,10 +116,10 @@ public class UIController {
         topBar.left();
         topBar.margin(0f, 0f, 8f, 0f);
 
-        serverCountLabel = topBar.add(I18N.get("admintools.portal.searching")).color(LucidTheme.textDim).left().growX().get();
+        serverCountLabel = topBar.add(Core.bundle.get("admintools.portal.searching")).color(LucidTheme.textDim).left().growX().get();
         serverCountLabel.setFontScale(0.85f);
 
-        TextButton refreshBtn = new TextButton(Iconc.refresh + " " + I18N.get("admintools.portal.refresh"), Styles.cleart);
+        TextButton refreshBtn = new TextButton(Iconc.refresh + " " + Core.bundle.get("admintools.portal.refresh"), Styles.cleart);
         refreshBtn.clicked(this::refreshServers);
         topBar.add(refreshBtn).size(105f, 28f);
 
@@ -141,7 +141,7 @@ public class UIController {
         final int session = ++currentPingSession;
         onlineServers.clear();
         rebuildServerList();
-        if (serverCountLabel != null) serverCountLabel.setText(I18N.get("admintools.portal.pinging"));
+        if (serverCountLabel != null) serverCountLabel.setText(Core.bundle.get("admintools.portal.pinging"));
 
         for (int port = 7000; port <= 7025; port++) {
             int currentPort = port;
@@ -165,7 +165,7 @@ public class UIController {
                     onlineServers.sort(s -> s.port);
 
                     if (serverCountLabel != null) {
-                        serverCountLabel.setText(I18N.format("admintools.portal.online", onlineServers.size));
+                        serverCountLabel.setText(Core.bundle.format("admintools.portal.online", onlineServers.size));
                     }
                     rebuildServerList();
                 },
@@ -181,7 +181,7 @@ public class UIController {
         serverListTable.clear();
 
         if (onlineServers.isEmpty()) {
-            serverListTable.add(I18N.get("admintools.portal.empty")).pad(24f).center().row();
+            serverListTable.add(Core.bundle.get("admintools.portal.empty")).pad(24f).center().row();
             return;
         }
 
@@ -208,7 +208,7 @@ public class UIController {
 
             // Players indicator if present
             if (s.players > 0) {
-                Label playersLbl = row.add(I18N.format("admintools.portal.players", s.players)).color(LucidTheme.textDim).padRight(8f).get();
+                Label playersLbl = row.add(Core.bundle.format("admintools.portal.players", s.players)).color(LucidTheme.textDim).padRight(8f).get();
                 playersLbl.setFontScale(0.85f);
             }
 

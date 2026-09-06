@@ -32,8 +32,7 @@ public class AdminTools extends Mod {
             HistoryFrame.update(stack);
         });
 
-        // Initialize localization safeguard and unified AuthManager
-        I18N.init();
+        // Initialize unified AuthManager (handles adm_mod_begin, adm_auth_result, auto-login)
         AuthManager.get().init();
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
@@ -58,7 +57,7 @@ public class AdminTools extends Mod {
                         } else if (lower.startsWith("login ") || lower.startsWith("xl ")) {
                             chatfield.setText("");
                             Core.app.post(() -> {
-                                ToastManager.error(I18N.get("admintools.chat.leak_blocked"));
+                                ToastManager.error(Core.bundle.get("admintools.chat.leak_blocked"));
                                 AuthDialog.showDialog();
                             });
                         }
@@ -80,23 +79,23 @@ public class AdminTools extends Mod {
                 Log.err("Failed to hook chatfield for anti-leak", t);
             }
 
-            Vars.ui.settings.addCategory(I18N.get("admintools.category", "AdminTools (XCore)"), new TextureRegionDrawable(Icon.admin.getRegion()), t -> {
-                t.button(I18N.get("admintools.settings.auth"), Icon.lock, AuthDialog::showDialog).size(260f, 44f).pad(6f).left().row();
-                t.check(I18N.get("admintools.settings.autologin"), AuthManager.get().isAutoLoginEnabled(), b -> {
+            Vars.ui.settings.addCategory("@admintools.category", new TextureRegionDrawable(Icon.admin.getRegion()), t -> {
+                t.button("@admintools.settings.auth", Icon.lock, AuthDialog::showDialog).size(260f, 44f).pad(6f).left().row();
+                t.check("@admintools.settings.autologin", AuthManager.get().isAutoLoginEnabled(), b -> {
                     Core.settings.put("admintools-auth-autologin", b);
                     Core.settings.saveValues();
                 }).left().row();
-                t.check(I18N.get("admintools.settings.hide_all"), ui.isHideAll(), ui::setHideAll).left().row();
-                t.check(I18N.get("admintools.settings.karma"), ui.karmaWindow.visible, b -> {
+                t.check("@admintools.settings.hide_all", ui.isHideAll(), ui::setHideAll).left().row();
+                t.check("@admintools.settings.karma", ui.karmaWindow.visible, b -> {
                     if (b) ui.karmaWindow.show(); else ui.karmaWindow.hide();
                 }).left().row();
-                t.check(I18N.get("admintools.settings.history"), ui.historyWindow.visible, b -> {
+                t.check("@admintools.settings.history", ui.historyWindow.visible, b -> {
                     if (b) ui.historyWindow.show(); else ui.historyWindow.hide();
                 }).left().row();
-                t.check(I18N.get("admintools.settings.portal"), ui.portalWindow.visible, b -> {
+                t.check("@admintools.settings.portal", ui.portalWindow.visible, b -> {
                     if (b) ui.portalWindow.show(); else ui.portalWindow.hide();
                 }).left().row();
-                t.check(I18N.get("admintools.settings.notifications"), Core.settings.getBool("admintools-notifications"),
+                t.check("@admintools.settings.notifications", Core.settings.getBool("admintools-notifications"),
                     b -> Core.settings.put("admintools-notifications", b)).left().row();
             });
         });

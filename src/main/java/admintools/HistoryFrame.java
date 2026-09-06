@@ -20,15 +20,15 @@ public class HistoryFrame {
         // - "Block" and "Rotation": auto-measured & auto-centered icon columns
         // - "Config": flex column with 0.6 weight
         // - "Time": auto-measured time column fitting full HH:mm:ss without truncation
-        dataTable.text(I18N.get("admintools.table.player"), e -> Strings.stripColors(e.name)).flex();
-        dataTable.icon(I18N.get("admintools.history.block"), HistoryEntry::blockEmoji);
-        dataTable.icon(I18N.get("admintools.history.rotation"), HistoryEntry::rotationAsString);
-        dataTable.text(I18N.get("admintools.history.config"), e -> e.config).flex(0.6f);
-        dataTable.time(I18N.get("admintools.history.time"), HistoryEntry::timeAsString);
+        dataTable.text(arc.Core.bundle.get("admintools.table.player"), e -> Strings.stripColors(e.name)).flex();
+        dataTable.icon(arc.Core.bundle.get("admintools.history.block"), HistoryEntry::blockEmoji);
+        dataTable.icon(arc.Core.bundle.get("admintools.history.rotation"), HistoryEntry::rotationAsString);
+        dataTable.text(arc.Core.bundle.get("admintools.history.config"), e -> e.config).flex(0.6f);
+        dataTable.time(arc.Core.bundle.get("admintools.history.time"), HistoryEntry::timeAsString);
 
         dataTable.pageSize(7);
 
-        SearchField search = new SearchField(I18N.get("admintools.search.history"), query -> {
+        SearchField search = new SearchField(arc.Core.bundle.get("admintools.search.history"), query -> {
             String q = query.toLowerCase().trim();
             dataTable.setFilter(e -> q.isEmpty() ||
                 (e.name != null && Strings.stripColors(e.name).toLowerCase().contains(q)) ||

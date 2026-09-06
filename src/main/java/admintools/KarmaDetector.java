@@ -56,27 +56,27 @@ public class KarmaDetector {
 
         dataTable = new DataTable<>();
         // 1. Nickname column - flexible, occupies remaining width
-        dataTable.text(I18N.get("admintools.table.player"), r -> r.name).flex();
+        dataTable.text(Core.bundle.get("admintools.table.player"), r -> r.name).flex();
 
         // 2. Karma column - centered badge
-        dataTable.custom(I18N.get("admintools.karma.col"), (cell, r) -> {
+        dataTable.custom(Core.bundle.get("admintools.karma.col"), (cell, r) -> {
             if (r.value >= 0.7f) {
-                cell.add(Badge.danger(I18N.format("admintools.karma.grief", (int)(r.value * 100))));
+                cell.add(Badge.danger(Core.bundle.format("admintools.karma.grief", (int)(r.value * 100))));
             } else if (r.value >= 0.35f) {
-                cell.add(Badge.warning(I18N.format("admintools.karma.warn", (int)(r.value * 100))));
+                cell.add(Badge.warning(Core.bundle.format("admintools.karma.warn", (int)(r.value * 100))));
             } else {
-                cell.add(Badge.success(I18N.format("admintools.karma.ok", (int)(r.value * 100))));
+                cell.add(Badge.success(Core.bundle.format("admintools.karma.ok", (int)(r.value * 100))));
             }
         }).fixed(96f).align(Align.center);
 
         // 3. Stats column - auto-measured and centered
-        dataTable.text(I18N.get("admintools.karma.stats"), r -> r.destroyed + " / " + (r.builded + r.destroyed))
+        dataTable.text(Core.bundle.get("admintools.karma.stats"), r -> r.destroyed + " / " + (r.builded + r.destroyed))
             .auto()
             .align(Align.center);
 
         // 4. Action column - centered icon button
-        dataTable.action(I18N.get("admintools.action.ban"), Icon.hammerSmall, r -> {
-            ConfirmDialog.show(I18N.get("admintools.dialog.ban_title"), Core.bundle.format("confirmban", r.name), () -> {
+        dataTable.action(Core.bundle.get("admintools.action.ban"), Icon.hammerSmall, r -> {
+            ConfirmDialog.show("@admintools.dialog.ban_title", Core.bundle.format("confirmban", r.name), () -> {
                 var user = Groups.player.find(p -> p.name().equals(r.name));
                 if (user != null) {
                     Call.adminRequest(user, Packets.AdminAction.ban, null);
@@ -87,7 +87,7 @@ public class KarmaDetector {
         dataTable.pageSize(7);
 
         // Search bar on top with clean margin
-        SearchField search = new SearchField(I18N.get("admintools.search.player"), query -> {
+        SearchField search = new SearchField(Core.bundle.get("admintools.search.player"), query -> {
             String lower = query.toLowerCase().trim();
             dataTable.setFilter(r -> lower.isEmpty() || r.name.toLowerCase().contains(lower));
         });

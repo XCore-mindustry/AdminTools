@@ -470,10 +470,10 @@ public class DataTable<T> extends Table {
         int endIndex = Math.min(filteredItems.size(), startIndex + pageSize);
 
         pageInfoLabel.setText((page + 1) + " / " + maxPages);
-        countInfoLabel.setText(admintools.I18N.format("admintools.table.total", filteredItems.size()));
+        countInfoLabel.setText(arc.Core.bundle.format("admintools.table.total", filteredItems.size()));
 
         if (filteredItems.isEmpty()) {
-            contentTable.add(admintools.I18N.get("admintools.table.empty")).colspan(Math.max(1, columns.size)).pad(24f).center().row();
+            contentTable.add(arc.Core.bundle.get("admintools.table.empty")).colspan(Math.max(1, columns.size)).pad(24f).center().row();
             return;
         }
 
