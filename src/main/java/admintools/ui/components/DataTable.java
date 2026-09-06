@@ -470,10 +470,10 @@ public class DataTable<T> extends Table {
         int endIndex = Math.min(filteredItems.size(), startIndex + pageSize);
 
         pageInfoLabel.setText((page + 1) + " / " + maxPages);
-        countInfoLabel.setText("Всего: " + filteredItems.size());
+        countInfoLabel.setText(admintools.I18N.format("admintools.table.total", filteredItems.size()));
 
         if (filteredItems.isEmpty()) {
-            contentTable.add("[lightgray]Нет данных для отображения[]").colspan(Math.max(1, columns.size)).pad(24f).center().row();
+            contentTable.add(admintools.I18N.get("admintools.table.empty")).colspan(Math.max(1, columns.size)).pad(24f).center().row();
             return;
         }
 

@@ -16,19 +16,19 @@ public class HistoryFrame {
 
         dataTable = new DataTable<>();
         // Smart declarative columns:
-        // - "Игрок": flex column taking available space with graceful ellipsis
-        // - "Блок" and "Поворот": auto-measured & auto-centered icon columns
-        // - "Конфиг": flex column with 0.6 weight
-        // - "Время": auto-measured time column fitting full HH:mm:ss without truncation
-        dataTable.text("Игрок", e -> Strings.stripColors(e.name)).flex();
-        dataTable.icon("Блок", HistoryEntry::blockEmoji);
-        dataTable.icon("Поворот", HistoryEntry::rotationAsString);
-        dataTable.text("Конфиг", e -> e.config).flex(0.6f);
-        dataTable.time("Время", HistoryEntry::timeAsString);
+        // - "Player": flex column taking available space with graceful ellipsis
+        // - "Block" and "Rotation": auto-measured & auto-centered icon columns
+        // - "Config": flex column with 0.6 weight
+        // - "Time": auto-measured time column fitting full HH:mm:ss without truncation
+        dataTable.text(I18N.get("admintools.table.player"), e -> Strings.stripColors(e.name)).flex();
+        dataTable.icon(I18N.get("admintools.history.block"), HistoryEntry::blockEmoji);
+        dataTable.icon(I18N.get("admintools.history.rotation"), HistoryEntry::rotationAsString);
+        dataTable.text(I18N.get("admintools.history.config"), e -> e.config).flex(0.6f);
+        dataTable.time(I18N.get("admintools.history.time"), HistoryEntry::timeAsString);
 
         dataTable.pageSize(7);
 
-        SearchField search = new SearchField("Поиск по истории...", query -> {
+        SearchField search = new SearchField(I18N.get("admintools.search.history"), query -> {
             String q = query.toLowerCase().trim();
             dataTable.setFilter(e -> q.isEmpty() ||
                 (e.name != null && Strings.stripColors(e.name).toLowerCase().contains(q)) ||

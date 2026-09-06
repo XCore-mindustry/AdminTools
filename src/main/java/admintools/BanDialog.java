@@ -24,7 +24,7 @@ public class BanDialog extends BaseDialog {
             nickname = json.getString("name");
         } catch (Exception e) {
             Log.err(e);
-            Vars.ui.showException("An error occurred while parsing the ban data:", e);
+            Vars.ui.showException(I18N.get("admintools.ban.parse_error"), e);
             return;
         }
 
@@ -33,14 +33,14 @@ public class BanDialog extends BaseDialog {
             Table table = new Table();
             table.add(nickname);
             table.row();
-            table.add("Reason: ").padRight(8f);
+            table.add(I18N.get("admintools.ban.reason")).padRight(8f);
             table.defaults().height(60f).padTop(8);
             table.field(null, value -> reason = value);
             table.row();
-            table.add("Ban duration(1d, 1h30m, etc): ").padRight(8f);
+            table.add(I18N.get("admintools.ban.duration")).padRight(8f);
             table.field(null, value -> banTime = value);
             table.row();
-            table.check("Rollback", rollback, (value) -> rollback = value);
+            table.check(I18N.get("admintools.ban.rollback"), rollback, (value) -> rollback = value);
             cont.row();
             cont.add(table);
         });
@@ -53,12 +53,12 @@ public class BanDialog extends BaseDialog {
 
         buttons.button("@ok", () -> {
             reason = switch (reason) {
-                case "1" -> "Griefing";
-                case "2" -> "Bad Behaviour / Toxicity";
-                case "3" -> "Vote-kick with inadequate reason";
-                case "4" -> "Exploiting Bugs";
-                case "5" -> "Ban Evasion";
-                case "6" -> "NSFW Content";
+                case "1" -> I18N.get("admintools.ban.reason.1");
+                case "2" -> I18N.get("admintools.ban.reason.2");
+                case "3" -> I18N.get("admintools.ban.reason.3");
+                case "4" -> I18N.get("admintools.ban.reason.4");
+                case "5" -> I18N.get("admintools.ban.reason.5");
+                case "6" -> I18N.get("admintools.ban.reason.6");
                 default -> reason;
             };
 

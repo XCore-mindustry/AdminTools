@@ -42,6 +42,7 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         from(rootDir) {
             include("mod.json")
+            include("bundles/**")
         }
     }
 
