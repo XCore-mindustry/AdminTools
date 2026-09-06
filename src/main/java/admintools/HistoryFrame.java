@@ -4,7 +4,6 @@ import admintools.ui.components.DataTable;
 import admintools.ui.components.SearchField;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Align;
 import arc.util.Strings;
 
 public class HistoryFrame {
@@ -16,17 +15,24 @@ public class HistoryFrame {
         view.top().left();
 
         dataTable = new DataTable<>();
-        dataTable.column("Игрок", e -> Strings.stripColors(e.name)); // flexible with ellipsis
-        dataTable.column("Блок", HistoryEntry::blockEmoji, false).align(Align.center);
-        dataTable.column("Поворот", e -> String.valueOf(e.rotationAsString()), false).align(Align.center);
-        dataTable.column("Конфиг", e -> e.config.length() > 14 ? e.config.substring(0, 14) + ".." : e.config);
-        dataTable.column("Время", HistoryEntry::timeAsString).align(Align.center);
+        // Smart declarative columns:
+        // - "Игрок": flex column taking available space with graceful ellipsis
+        // - "Блок" and "Поворот": auto-measured & auto-centered icon columns
+        // - "Конфиг": flex column with 0.6 weight
+        // - "Время": auto-measured time column fitting full HH:mm:ss without truncation
+        dataTable.text("Игрок", e -> Strings.stripColors(e.name)).flex();
+        dataTable.icon("Блок", HistoryEntry::blockEmoji);
+        dataTable.icon("Поворот", HistoryEntry::rotationAsString);
+        dataTable.text("Конфиг", e -> e.config).flex(0.6f);
+        dataTable.time("Время", HistoryEntry::timeAsString);
 
         dataTable.pageSize(7);
 
         SearchField search = new SearchField("Поиск по истории...", query -> {
             String q = query.toLowerCase().trim();
-            dataTable.setFilter(e -> q.isEmpty() || Strings.stripColors(e.name).toLowerCase().contains(q) || e.config.toLowerCase().contains(q));
+            dataTable.setFilter(e -> q.isEmpty() ||
+                (e.name != null && Strings.stripColors(e.name).toLowerCase().contains(q)) ||
+                (e.config != null && e.config.toLowerCase().contains(q)));
         });
 
         view.add(search).growX().padBottom(10f).row();

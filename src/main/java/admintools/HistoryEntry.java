@@ -6,9 +6,6 @@ import mindustry.Vars;
 import mindustry.gen.Iconc;
 import mindustry.world.Block;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
 public class HistoryEntry {
     public short x;
     public short y;
@@ -36,19 +33,26 @@ public class HistoryEntry {
         }
     }
 
-    public Object rotationAsString() {
-        if (!block().rotate)
-            return null;
+    public String rotationAsString() {
+        Block b = block();
+        if (b == null || !b.rotate) {
+            return "[gray]-[]";
+        }
         return switch (rotation) {
-            case 0 -> "";
-            case 1 -> "";
-            case 2 -> "";
-            case 3 -> "";
-            default -> Iconc.warning; //Should not happen
+            case 0 -> Iconc.right + "";
+            case 1 -> Iconc.up + "";
+            case 2 -> Iconc.left + "";
+            case 3 -> Iconc.down + "";
+            default -> "[gray]-[]";
         };
     }
 
     public String timeAsString() {
-        return (valid ? "[white]" : "[gray]") + LocalTime.MIN.plusSeconds(time).format(DateTimeFormatter.ISO_LOCAL_TIME) + "[]";
+        int t = Short.toUnsignedInt(time);
+        int hours = t / 3600;
+        int minutes = (t % 3600) / 60;
+        int seconds = t % 60;
+        String formatted = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        return (valid ? "[white]" : "[gray]") + formatted + "[]";
     }
 }

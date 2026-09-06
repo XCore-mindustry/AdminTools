@@ -4,8 +4,6 @@ import admintools.ui.components.Badge;
 import admintools.ui.components.ConfirmDialog;
 import admintools.ui.components.DataTable;
 import admintools.ui.components.SearchField;
-import admintools.ui.dsl.UiBuilder;
-import admintools.ui.theme.LucidTheme;
 import arc.Core;
 import arc.Events;
 import arc.scene.ui.layout.Table;
@@ -57,12 +55,11 @@ public class KarmaDetector {
         view.top().left();
 
         dataTable = new DataTable<>();
+        // 1. Nickname column - flexible, occupies remaining width
+        dataTable.text("Игрок", r -> r.name).flex();
 
-        // 1. Nickname column - flexible with ellipsis
-        dataTable.column("Игрок", r -> r.name);
-
-        // 2. Karma column - center
-        dataTable.customColumn("Карма", (cell, r) -> {
+        // 2. Karma column - centered badge
+        dataTable.custom("Карма", (cell, r) -> {
             if (r.value >= 0.7f) {
                 cell.add(Badge.danger((int)(r.value * 100) + "% GRIEF"));
             } else if (r.value >= 0.35f) {
@@ -70,26 +67,22 @@ public class KarmaDetector {
             } else {
                 cell.add(Badge.success((int)(r.value * 100) + "% OK"));
             }
-        }).align(Align.center);
+        }).fixed(96f).align(Align.center);
 
-        // 3. Stats column - center
-        dataTable.customColumn("Сломано / Всего", (cell, r) -> {
-            var lbl = cell.add(r.destroyed + " / " + (r.builded + r.destroyed)).get();
-            lbl.setFontScale(0.85f);
-            lbl.setColor(LucidTheme.textDim);
-        }).align(Align.center);
+        // 3. Stats column - auto-measured and centered
+        dataTable.text("Сломано / Всего", r -> r.destroyed + " / " + (r.builded + r.destroyed))
+            .auto()
+            .align(Align.center);
 
-        // 4. Action column - center
-        dataTable.customColumn("Бан", (cell, r) -> {
-            UiBuilder.iconButton(cell, Icon.hammerSmall, () -> {
-                ConfirmDialog.show("Бан игрока", Core.bundle.format("confirmban", r.name), () -> {
-                    var user = Groups.player.find(p -> p.name().equals(r.name));
-                    if (user != null) {
-                        Call.adminRequest(user, Packets.AdminAction.ban, null);
-                    }
-                });
+        // 4. Action column - centered icon button
+        dataTable.action("Бан", Icon.hammerSmall, r -> {
+            ConfirmDialog.show("Бан игрока", Core.bundle.format("confirmban", r.name), () -> {
+                var user = Groups.player.find(p -> p.name().equals(r.name));
+                if (user != null) {
+                    Call.adminRequest(user, Packets.AdminAction.ban, null);
+                }
             });
-        }).align(Align.center);
+        });
 
         dataTable.pageSize(7);
 
