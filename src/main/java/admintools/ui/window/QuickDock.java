@@ -1,5 +1,8 @@
 package admintools.ui.window;
 
+import admintools.ui.auth.AuthDialog;
+import admintools.ui.auth.AuthManager;
+import admintools.ui.components.ConfirmDialog;
 import admintools.ui.theme.LucidTheme;
 import arc.Core;
 import arc.input.KeyCode;
@@ -72,6 +75,7 @@ public class QuickDock extends Table {
         });
 
         add(dragHandle).size(22f).padRight(8f);
+        setupAuthButton();
         add(itemsTable).grow();
         add(collapseBtn).size(22f).padLeft(8f);
 
@@ -81,6 +85,39 @@ public class QuickDock extends Table {
                 ensureRestored();
             }
         });
+    }
+
+    private void setupAuthButton() {
+        ImageButton authBtn = new ImageButton(Icon.lock, LucidTheme.glassImageButtonStyle());
+        authBtn.clicked(() -> {
+            if (AuthManager.get().getStatus() == AuthManager.Status.AUTHENTICATED) {
+                ConfirmDialog.show("Авторизация XCore", "Вы уже авторизованы как администратор.\nХотите выйти?", () -> {
+                    AuthManager.get().logout();
+                });
+            } else {
+                AuthDialog.showDialog();
+            }
+        });
+
+        authBtn.update(() -> {
+            AuthManager.Status s = AuthManager.get().getStatus();
+            if (s == AuthManager.Status.AUTHENTICATED) {
+                authBtn.getStyle().imageUp = Icon.admin;
+                authBtn.getStyle().imageUpColor = Pal.accent;
+            } else if (s == AuthManager.Status.AUTHENTICATING) {
+                authBtn.getStyle().imageUp = Icon.lock;
+                authBtn.getStyle().imageUpColor = Pal.accent;
+            } else if (s == AuthManager.Status.ERROR) {
+                authBtn.getStyle().imageUp = Icon.lock;
+                authBtn.getStyle().imageUpColor = Pal.remove;
+            } else {
+                authBtn.getStyle().imageUp = Icon.lock;
+                authBtn.getStyle().imageUpColor = LucidTheme.textDim;
+            }
+        });
+
+        var cell = itemsTable.add(authBtn).size(34f).pad(0f, 4f, 0f, 4f);
+        cell.visible(() -> AuthManager.get().isXCore() || AuthManager.get().getStatus() == AuthManager.Status.AUTHENTICATED);
     }
 
     public void registerWindow(WindowSpec spec) {
