@@ -5,7 +5,7 @@
   "main": "admintools.AdminTools",
   "description": "XCore Admin Mod",
   "version": "2.0",
-  "minGameVersion": "159.7",
+  "minGameVersion": "160",
   "hidden": true,
   "java": true
 }
