@@ -65,7 +65,7 @@ public class AuthManager {
             pendingRequestEpoch = -1L;
 
             LoadedMod mod = Vars.mods.getMod(AdminTools.class);
-            String version = (mod != null && mod.meta != null && mod.meta.version != null) ? mod.meta.version : "1.8.2";
+            String version = (mod != null && mod.meta != null && mod.meta.version != null) ? mod.meta.version : "2.1";
             Call.serverPacketReliable("adm_mod_end", version);
 
             // Do not start auto-login here: wait for authoritative adm_auth_status from server!
