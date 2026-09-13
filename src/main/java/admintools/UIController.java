@@ -58,6 +58,9 @@ public class UIController {
     private int currentPingSession = 0;
 
     public static void connect(int port) {
+        if (Vars.net.client() || Vars.net.active()) {
+            Vars.netClient.disconnectQuietly();
+        }
         Vars.player.name(Core.settings.getString("name"));
         ui.join.connect(IP, port);
     }

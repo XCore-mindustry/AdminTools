@@ -35,6 +35,18 @@ public class AdminTools extends Mod {
         // Initialize unified AuthManager (handles adm_mod_begin, adm_auth_result, auto-login)
         AuthManager.get().init();
 
+        // Restore original nickname from settings before any server connection or on reset
+        Events.on(EventType.ClientServerConnectEvent.class, e -> {
+            if (Vars.player != null) {
+                Vars.player.name(Core.settings.getString("name"));
+            }
+        });
+        Events.on(EventType.ResetEvent.class, e -> {
+            if (Vars.player != null) {
+                Vars.player.name(Core.settings.getString("name"));
+            }
+        });
+
         Events.on(EventType.ClientLoadEvent.class, e -> {
             ui = new UIController();
 
