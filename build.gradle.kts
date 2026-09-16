@@ -19,6 +19,8 @@ java {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven("https://maven.x-core.org/releases")
+    maven("https://maven.x-core.org/snapshots")
     anukeJitpack()
     anukeZelaux()
 }
@@ -36,7 +38,7 @@ tasks.withType<JavaCompile>().configureEach {
 dependencies {
     compileOnly(toxopid.dependencies.mindustryCore)
     compileOnly(toxopid.dependencies.arcCore)
-    implementation("org.xcore:xcore-protocol-java:0.6.1")
+    implementation("org.xcore:xcore-protocol-java:0.6.2")
 }
 
 tasks {
