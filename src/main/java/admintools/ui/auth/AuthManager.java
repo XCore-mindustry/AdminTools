@@ -12,6 +12,12 @@ import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.gen.Call;
 import mindustry.mod.Mods.LoadedMod;
+import org.xcore.protocol.packet.auth.AuthLoginPacket;
+import org.xcore.protocol.packet.auth.AuthLogoutPacket;
+import org.xcore.protocol.packet.auth.AuthResultPacket;
+import org.xcore.protocol.packet.auth.AuthStatusPacket;
+import org.xcore.protocol.packet.auth.AuthTokenLoginPacket;
+import org.xcore.protocol.packet.auth.DiscordLinkInfoPacket;
 
 public class AuthManager {
     private static final AuthManager instance = new AuthManager();

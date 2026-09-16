@@ -1,7 +1,7 @@
-import com.xpdustry.toxopid.spec.ModPlatform
-import com.xpdustry.toxopid.extension.anukeZelaux
 import com.xpdustry.toxopid.extension.anukeJitpack
+import com.xpdustry.toxopid.extension.anukeZelaux
 import com.xpdustry.toxopid.spec.ModMetadata
+import com.xpdustry.toxopid.spec.ModPlatform
 
 plugins {
     java
@@ -17,6 +17,7 @@ java {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     anukeJitpack()
     anukeZelaux()
@@ -35,6 +36,7 @@ tasks.withType<JavaCompile>().configureEach {
 dependencies {
     compileOnly(toxopid.dependencies.mindustryCore)
     compileOnly(toxopid.dependencies.arcCore)
+    implementation("org.xcore:xcore-protocol-java:0.6.1")
 }
 
 tasks {
@@ -44,6 +46,9 @@ tasks {
             include("mod.json")
             include("bundles/**")
         }
+        from({
+            configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }
+        })
     }
 
     mergeJar {
