@@ -1,5 +1,6 @@
 package admintools.ui.window;
 
+import admintools.input.FreeCamController;
 import admintools.ui.auth.AuthDialog;
 import admintools.ui.auth.AuthManager;
 import admintools.ui.components.ConfirmDialog;
@@ -76,6 +77,7 @@ public class QuickDock extends Table {
 
         add(dragHandle).size(22f).padRight(8f);
         setupAuthButton();
+        setupFreeCamButton();
         add(itemsTable).grow();
         add(collapseBtn).size(22f).padLeft(8f);
 
@@ -118,6 +120,20 @@ public class QuickDock extends Table {
 
         var cell = itemsTable.add(authBtn).size(34f).pad(0f, 4f, 0f, 4f);
         cell.visible(() -> AuthManager.get().isXCore() || AuthManager.get().getStatus() == AuthManager.Status.AUTHENTICATED);
+    }
+
+    private void setupFreeCamButton() {
+        ImageButton camBtn = new ImageButton(Icon.eye, LucidTheme.glassImageButtonStyle());
+        camBtn.clicked(() -> FreeCamController.get().toggle());
+
+        camBtn.update(() -> {
+            boolean active = FreeCamController.get().isActive();
+            camBtn.getStyle().imageUpColor = active ? Pal.accent : LucidTheme.textDim;
+            camBtn.getStyle().up = active ? LucidTheme.glass(LucidTheme.bgActive, LucidTheme.accent) : LucidTheme.glass(LucidTheme.bgCard, LucidTheme.borderSubtle);
+        });
+
+        var cell = itemsTable.add(camBtn).size(34f).pad(0f, 4f, 0f, 4f);
+        cell.visible(() -> FreeCamController.get().isSupported());
     }
 
     public void registerWindow(WindowSpec spec) {

@@ -4,12 +4,15 @@ import admintools.ui.components.ToastManager;
 import admintools.ui.theme.LucidTheme;
 import arc.Core;
 import arc.input.KeyCode;
+import arc.scene.event.SceneResizeEvent;
 import arc.scene.ui.CheckBox;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.ImageButton;
 import arc.scene.ui.Label;
+import arc.scene.ui.ScrollPane;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.TextField;
+import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
 import mindustry.gen.Icon;
@@ -19,6 +22,7 @@ import mindustry.ui.Styles;
 /**
  * A compact, modern modal card for XCore admin authentication.
  * Automatically adapts between Discord Linking flow and Admin Password Login.
+ * Fully responsive on both mobile (portrait and landscape) and desktop.
  */
 public class AuthDialog extends Dialog {
     public static AuthDialog current;
@@ -41,34 +45,24 @@ public class AuthDialog extends Dialog {
         background(LucidTheme.glass(LucidTheme.bgGlass, LucidTheme.accent));
         margin(0f);
 
-        // Remove default title table
+        // 1. Custom Title Bar using Dialog's native titleTable (Row 0)
         titleTable.clear();
-        titleTable.remove();
+        titleTable.background(LucidTheme.glass(LucidTheme.bgHeader, LucidTheme.borderSubtle));
+        titleTable.margin(8f, 14f, 8f, 10f);
 
-        // 1. Custom Title Bar
-        Table titleBar = new Table();
-        titleBar.background(LucidTheme.glass(LucidTheme.bgHeader, LucidTheme.borderSubtle));
-        titleBar.margin(8f, 14f, 8f, 10f);
-
-        titleBar.image(Icon.admin).size(22f).color(Pal.accent).padRight(8f);
-        titleBar.add("@admintools.auth.title").color(Pal.accent).growX().left();
+        titleTable.image(Icon.admin).size(22f).color(Pal.accent).padRight(8f);
+        titleTable.add("@admintools.auth.title").color(Pal.accent).growX().left();
 
         ImageButton closeBtn = new ImageButton(Icon.cancel, Styles.clearNonei);
         closeBtn.clicked(this::hide);
-        titleBar.add(closeBtn).size(24f);
-
-        add(titleBar).growX().row();
-
-        // 2. Form Content Area
-        cont.clear();
-        cont.margin(14f, 18f, 10f, 18f);
-        cont.add(form).width(Scl.scl(340f)).row();
+        titleTable.add(closeBtn).size(24f);
 
         closeOnBack();
 
         rebuildUI();
 
         shown(() -> {
+            rebuildUI();
             statusLabel.setText("");
             AuthManager.get().requestAuthStatus();
             if (passwordField != null) {
@@ -79,11 +73,35 @@ public class AuthDialog extends Dialog {
         hidden(() -> {
             if (current == this) current = null;
         });
+
+        addListener(event -> {
+            if (event instanceof SceneResizeEvent && isShown()) {
+                rebuildUI();
+            }
+            return false;
+        });
+    }
+
+    private float getFormWidth() {
+        float screenW = (Core.scene.getWidth() - Core.scene.marginLeft - Core.scene.marginRight) / Scl.scl(1f);
+        return Math.max(260f, Math.min(screenW - 36f, 340f));
     }
 
     public void rebuildUI() {
         form.clear();
         buttons.clear();
+        cont.clear();
+
+        float formWidth = getFormWidth();
+        float maxH = Math.max(140f, (Core.scene.getHeight() - Core.scene.marginTop - Core.scene.marginBottom) / Scl.scl(1f) - 120f);
+
+        cont.margin(12f, 16f, 10f, 16f);
+        Cell<ScrollPane> paneCell = cont.pane(form);
+        if (paneCell.get() != null) {
+            paneCell.get().setOverscroll(false, false);
+            paneCell.get().setScrollingDisabled(true, false);
+        }
+        paneCell.width(formWidth).maxHeight(maxH).scrollX(false).row();
 
         boolean isLinked = AuthManager.get().isDiscordLinked();
         String activeCode = AuthManager.get().getActiveLinkCode();
@@ -113,7 +131,7 @@ public class AuthDialog extends Dialog {
                     Core.app.setClipboardText("/link " + activeCode);
                     ToastManager.info(Core.bundle.get("admintools.auth.copied"));
                 });
-                codeBox.add(copyBtn).size(Scl.scl(100f), Scl.scl(32f));
+                codeBox.add(copyBtn).size(90f, 32f);
 
                 form.add(codeBox).growX().padBottom(8f).row();
 
@@ -137,7 +155,8 @@ public class AuthDialog extends Dialog {
                 form.add(waitingLbl).center().padBottom(8f).row();
 
                 buttons.margin(6f, 16f, 14f, 16f);
-                buttons.defaults().size(Scl.scl(120f), Scl.scl(38f)).pad(Scl.scl(6f));
+                float btnWidth = Math.min((formWidth - 12f) / 2f, 120f);
+                buttons.defaults().size(btnWidth, 38f).pad(4f);
                 buttons.button("@cancel", Styles.defaultt, () -> {
                     AuthManager.get().clearActiveLinkCode();
                     rebuildUI();
@@ -159,12 +178,13 @@ public class AuthDialog extends Dialog {
                     statusLabel.setText(Core.bundle.get("admintools.auth.generating_code"));
                     AuthManager.get().requestDiscordLink();
                 });
-                form.add(linkBtn).size(Scl.scl(220f), Scl.scl(38f)).center().padBottom(8f).row();
+                form.add(linkBtn).size(Math.min(formWidth - 20f, 220f), 38f).center().padBottom(8f).row();
 
                 form.add(statusLabel).growX().minHeight(20f).padBottom(4f).row();
 
                 buttons.margin(6f, 16f, 14f, 16f);
-                buttons.defaults().size(Scl.scl(120f), Scl.scl(38f)).pad(Scl.scl(6f));
+                float btnWidth = Math.min((formWidth - 12f) / 2f, 120f);
+                buttons.defaults().size(btnWidth, 38f).pad(4f);
                 buttons.button("@close", Styles.defaultt, this::hide);
             }
         } else {
@@ -225,7 +245,8 @@ public class AuthDialog extends Dialog {
 
             // Action Buttons
             buttons.margin(6f, 16f, 14f, 16f);
-            buttons.defaults().size(Scl.scl(120f), Scl.scl(38f)).pad(Scl.scl(6f));
+            float btnWidth = Math.min((formWidth - 12f) / 2f, 120f);
+            buttons.defaults().size(btnWidth, 38f).pad(4f);
             buttons.button("@cancel", Styles.defaultt, this::hide);
             buttons.button(AuthManager.get().hasPassword() ? "@admintools.auth.login" : "@admintools.auth.create", LucidTheme.flatTextButtonStyle(), this::submit);
 

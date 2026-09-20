@@ -1,5 +1,6 @@
 package admintools;
 
+import admintools.input.FreeCamController;
 import admintools.ui.components.ToastManager;
 import admintools.ui.theme.LucidTheme;
 import admintools.ui.window.FloatingWindow;
@@ -94,6 +95,7 @@ public class UIController {
 
         // Install into Scene
         windowManager.install(Core.scene);
+        FreeCamController.get().installHUD();
 
         // World tile preview renderer for history
         renderer.addEnvRenderer(0, () -> {

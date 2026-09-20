@@ -1,5 +1,6 @@
 package admintools;
 
+import admintools.input.FreeCamController;
 import admintools.ui.auth.AuthDialog;
 import admintools.ui.auth.AuthManager;
 import admintools.ui.components.ToastManager;
@@ -107,11 +108,15 @@ public class AdminTools extends Mod {
                 t.check("@admintools.settings.portal", ui.portalWindow.visible, b -> {
                     if (b) ui.portalWindow.show(); else ui.portalWindow.hide();
                 }).left().row();
+                t.check("@admintools.settings.freecam", FreeCamController.get().isEnabled(), b -> {
+                    FreeCamController.get().setEnabled(b);
+                }).left().row();
                 t.check("@admintools.settings.notifications", Core.settings.getBool("admintools-notifications"),
                     b -> Core.settings.put("admintools-notifications", b)).left().row();
             });
         });
 
         KarmaDetector.init();
+        FreeCamController.get().init();
     }
 }

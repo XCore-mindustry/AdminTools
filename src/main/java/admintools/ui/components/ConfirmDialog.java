@@ -1,13 +1,14 @@
 package admintools.ui.components;
 
 import admintools.ui.theme.LucidTheme;
+import arc.Core;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Scl;
-import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 
 /**
  * A sleek, compact confirmation modal dialog for critical actions (logout, bans, rollbacks).
+ * Fully responsive across desktop and mobile screens.
  */
 public class ConfirmDialog extends Dialog {
 
@@ -18,11 +19,15 @@ public class ConfirmDialog extends Dialog {
         background(LucidTheme.glass(LucidTheme.bgGlass, LucidTheme.accent));
         closeOnBack();
 
-        cont.margin(16f, 20f, 12f, 20f);
-        cont.add(message).wrap().width(Scl.scl(320f)).pad(Scl.scl(8f)).center().row();
+        float screenW = (Core.scene.getWidth() - Core.scene.marginLeft - Core.scene.marginRight) / Scl.scl(1f);
+        float dialogWidth = Math.max(260f, Math.min(screenW - 36f, 320f));
 
-        buttons.margin(6f, 16f, 14f, 16f);
-        buttons.defaults().size(Scl.scl(120f), Scl.scl(38f)).pad(Scl.scl(6f));
+        cont.margin(16f, 16f, 12f, 16f);
+        cont.add(message).wrap().width(dialogWidth).pad(8f).center().row();
+
+        buttons.margin(6f, 14f, 14f, 14f);
+        float btnWidth = Math.min((dialogWidth - 16f) / 2f, 120f);
+        buttons.defaults().size(btnWidth, 38f).pad(4f);
         buttons.button("@cancel", Styles.defaultt, this::hide);
         buttons.button("@ok", LucidTheme.flatTextButtonStyle(), () -> {
             hide();

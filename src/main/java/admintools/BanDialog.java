@@ -3,12 +3,15 @@ package admintools;
 import admintools.ui.theme.LucidTheme;
 import arc.Core;
 import arc.graphics.Color;
+import arc.scene.event.SceneResizeEvent;
 import arc.scene.ui.CheckBox;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.ImageButton;
 import arc.scene.ui.Label;
+import arc.scene.ui.ScrollPane;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.TextField;
+import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
@@ -24,6 +27,7 @@ import mindustry.ui.Styles;
 
 /**
  * Modern, compact modal card for ban execution and rollback requests.
+ * Fully responsive across desktop and mobile screens.
  */
 public class BanDialog extends Dialog {
     private static final JsonReader jsonReader = new JsonReader();
@@ -53,26 +57,25 @@ public class BanDialog extends Dialog {
         background(LucidTheme.glass(LucidTheme.bgGlass, LucidTheme.accent));
         margin(0f);
 
+        // 1. Custom Title Bar using Dialog's native titleTable (Row 0)
         titleTable.clear();
-        titleTable.remove();
+        titleTable.background(LucidTheme.glass(LucidTheme.bgHeader, LucidTheme.borderSubtle));
+        titleTable.margin(8f, 14f, 8f, 10f);
 
-        // 1. Custom Title Bar
-        Table titleBar = new Table();
-        titleBar.background(LucidTheme.glass(LucidTheme.bgHeader, LucidTheme.borderSubtle));
-        titleBar.margin(8f, 14f, 8f, 10f);
-
-        titleBar.image(Icon.hammer).size(22f).color(Pal.accent).padRight(8f);
-        titleBar.add("@admintools.dialog.ban_title").color(Pal.accent).growX().left();
+        titleTable.image(Icon.hammer).size(22f).color(Pal.accent).padRight(8f);
+        titleTable.add("@admintools.dialog.ban_title").color(Pal.accent).growX().left();
 
         ImageButton closeBtn = new ImageButton(Icon.cancel, Styles.clearNonei);
         closeBtn.clicked(this::cancel);
-        titleBar.add(closeBtn).size(24f);
-
-        add(titleBar).growX().row();
+        titleTable.add(closeBtn).size(24f);
 
         // 2. Main Form Content Area
+        float screenW = (Core.scene.getWidth() - Core.scene.marginLeft - Core.scene.marginRight) / Scl.scl(1f);
+        float formWidth = Math.max(280f, Math.min(screenW - 36f, 380f));
+        float maxH = Math.max(160f, (Core.scene.getHeight() - Core.scene.marginTop - Core.scene.marginBottom) / Scl.scl(1f) - 130f);
+
         cont.clear();
-        cont.margin(14f, 18f, 10f, 18f);
+        cont.margin(12f, 14f, 10f, 14f);
 
         Table form = new Table();
         form.top().left();
@@ -184,12 +187,18 @@ public class BanDialog extends Dialog {
         rollbackBox.setChecked(false);
         form.add(rollbackBox).left().padBottom(6f).row();
 
-        cont.add(form).width(Scl.scl(380f)).row();
+        Cell<ScrollPane> paneCell = cont.pane(form);
+        if (paneCell.get() != null) {
+            paneCell.get().setOverscroll(false, false);
+            paneCell.get().setScrollingDisabled(true, false);
+        }
+        paneCell.width(formWidth).maxHeight(maxH).scrollX(false).row();
 
         // 3. Action Buttons
         buttons.clear();
-        buttons.margin(6f, 16f, 14f, 16f);
-        buttons.defaults().size(Scl.scl(120f), Scl.scl(38f)).pad(Scl.scl(6f));
+        buttons.margin(6f, 14f, 14f, 14f);
+        float btnWidth = Math.min((formWidth - 16f) / 2f, 120f);
+        buttons.defaults().size(btnWidth, 38f).pad(4f);
 
         buttons.button("@cancel", Styles.defaultt, this::cancel);
         buttons.button("@admintools.action.ban", LucidTheme.flatTextButtonStyle(), this::submit);
@@ -200,6 +209,17 @@ public class BanDialog extends Dialog {
             if (!submitted) {
                 cancel();
             }
+        });
+
+        addListener(event -> {
+            if (event instanceof SceneResizeEvent && isShown()) {
+                float w = (Core.scene.getWidth() - Core.scene.marginLeft - Core.scene.marginRight) / Scl.scl(1f);
+                float fw = Math.max(280f, Math.min(w - 36f, 380f));
+                float mh = Math.max(160f, (Core.scene.getHeight() - Core.scene.marginTop - Core.scene.marginBottom) / Scl.scl(1f) - 130f);
+                paneCell.width(fw).maxHeight(mh);
+                pack();
+            }
+            return false;
         });
 
         pack();
