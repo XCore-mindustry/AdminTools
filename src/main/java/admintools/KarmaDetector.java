@@ -56,7 +56,7 @@ public class KarmaDetector {
 
         dataTable = new DataTable<>();
         // 1. Nickname column - flexible, occupies remaining width
-        dataTable.text(Core.bundle.get("admintools.table.player"), r -> r.name).flex();
+        dataTable.text(Core.bundle.get("admintools.table.player"), r -> r.name).flex(1.2f).minWidth(110f);
 
         // 2. Karma column - centered badge
         dataTable.custom(Core.bundle.get("admintools.karma.col"), (cell, r) -> {
@@ -67,11 +67,11 @@ public class KarmaDetector {
             } else {
                 cell.add(Badge.success(Core.bundle.format("admintools.karma.ok", (int)(r.value * 100))));
             }
-        }).fixed(96f).align(Align.center);
+        }).fixed(100f).align(Align.center);
 
-        // 3. Stats column - auto-measured and centered
+        // 3. Stats column - fixed width, centered
         dataTable.text(Core.bundle.get("admintools.karma.stats"), r -> r.destroyed + " / " + (r.builded + r.destroyed))
-            .auto()
+            .fixed(125f)
             .align(Align.center);
 
         // 4. Action column - centered icon button
@@ -92,7 +92,7 @@ public class KarmaDetector {
             dataTable.setFilter(r -> lower.isEmpty() || r.name.toLowerCase().contains(lower));
         });
 
-        view.add(search).growX().padBottom(10f).row();
+        view.add(search).growX().padBottom(8f).row();
         view.add(dataTable).grow();
 
         update();

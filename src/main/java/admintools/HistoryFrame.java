@@ -20,10 +20,10 @@ public class HistoryFrame {
         // - "Block" and "Rotation": auto-measured & auto-centered icon columns
         // - "Config": flex column with 0.6 weight
         // - "Time": auto-measured time column fitting full HH:mm:ss without truncation
-        dataTable.text(arc.Core.bundle.get("admintools.table.player"), e -> Strings.stripColors(e.name)).flex();
+        dataTable.text(arc.Core.bundle.get("admintools.table.player"), e -> Strings.stripColors(e.name)).flex(1.2f).minWidth(110f);
         dataTable.icon(arc.Core.bundle.get("admintools.history.block"), HistoryEntry::blockEmoji);
         dataTable.icon(arc.Core.bundle.get("admintools.history.rotation"), HistoryEntry::rotationAsString);
-        dataTable.text(arc.Core.bundle.get("admintools.history.config"), e -> e.config).flex(0.6f);
+        dataTable.text(arc.Core.bundle.get("admintools.history.config"), e -> e.config).flex(0.8f).minWidth(60f);
         dataTable.time(arc.Core.bundle.get("admintools.history.time"), HistoryEntry::timeAsString);
 
         dataTable.pageSize(7);
@@ -35,7 +35,7 @@ public class HistoryFrame {
                 (e.config != null && e.config.toLowerCase().contains(q)));
         });
 
-        view.add(search).growX().padBottom(10f).row();
+        view.add(search).growX().padBottom(8f).row();
         view.add(dataTable).grow();
 
         return view;

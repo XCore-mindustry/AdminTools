@@ -72,19 +72,19 @@ public class UIController {
 
         // 1. Karma Window
         karmaWindow = windowManager.createWindow(
-            WindowSpec.of("karma", Core.bundle.get("admintools.window.karma"), Icon.hammer, 480f, 360f),
+            WindowSpec.of("karma", Core.bundle.get("admintools.window.karma"), Icon.hammer, 540f, 380f),
             win -> win.content(body -> body.add(KarmaDetector.buildView()).grow())
         );
 
         // 2. History Window
         historyWindow = windowManager.createWindow(
-            WindowSpec.of("history", Core.bundle.get("admintools.window.history"), Icon.book, 520f, 360f),
+            WindowSpec.of("history", Core.bundle.get("admintools.window.history"), Icon.book, 580f, 380f),
             win -> win.content(body -> body.add(HistoryFrame.buildView()).grow())
         );
 
         // 3. Portal Window
         portalWindow = windowManager.createWindow(
-            WindowSpec.of("portal", Core.bundle.get("admintools.window.portal"), Icon.host, 440f, 380f),
+            WindowSpec.of("portal", Core.bundle.get("admintools.window.portal"), Icon.host, 480f, 400f),
             win -> win.content(this::buildPortalContent)
         );
 
@@ -119,14 +119,15 @@ public class UIController {
         // Header toolbar: server count label + refresh button
         Table topBar = new Table();
         topBar.left();
-        topBar.margin(0f, 0f, 8f, 0f);
+        topBar.margin(0f, 2f, 8f, 2f);
 
         serverCountLabel = topBar.add(Core.bundle.get("admintools.portal.searching")).color(LucidTheme.textDim).left().growX().get();
         serverCountLabel.setFontScale(0.85f);
 
-        TextButton refreshBtn = new TextButton(Iconc.refresh + " " + Core.bundle.get("admintools.portal.refresh"), Styles.cleart);
+        TextButton refreshBtn = new TextButton(Iconc.refresh + " " + Core.bundle.get("admintools.portal.refresh"), LucidTheme.flatTextButtonStyle());
+        refreshBtn.getLabel().setFontScale(0.85f);
         refreshBtn.clicked(this::refreshServers);
-        topBar.add(refreshBtn).size(105f, 28f);
+        topBar.add(refreshBtn).size(100f, 28f);
 
         body.add(topBar).growX().row();
 
@@ -157,10 +158,9 @@ public class UIController {
 
                     String name = host.name;
                     name = Strings.stripColors(name);
-                    name = name.replaceAll("(?i)core", "");
+                    name = name.replaceAll("(?i)x?core", "");
                     name = name.replaceAll("[\uE000-\uF8FF]", "");
-                    name = name.replaceFirst("^[^a-zA-Z0-9]+", "");
-                    if (name.startsWith("X ")) name = name.substring(2);
+                    name = name.replaceAll("^[\\s>›»—–\\-:xX]+", "").trim();
 
                     ServerEntry entry = new ServerEntry(currentPort, name.trim(), host.players, host.ping);
 
@@ -195,32 +195,34 @@ public class UIController {
 
             Table row = new Table();
             row.background(LucidTheme.glass(LucidTheme.bgCard, LucidTheme.borderSubtle));
-            row.margin(6f, 12f, 6f, 12f);
+            row.margin(6f, 10f, 6f, 10f);
             row.left();
 
-            // Port badge
+            // Port badge (pill style)
             Table portBadge = new Table();
-            portBadge.background(LucidTheme.glass(LucidTheme.bgHeader, LucidTheme.accent));
+            portBadge.background(LucidTheme.badgeBg(Pal.accent));
             portBadge.margin(2f, 6f, 2f, 6f);
             Label pLbl = portBadge.add(String.valueOf(s.port)).color(Pal.accent).get();
             pLbl.setFontScale(0.85f);
-            row.add(portBadge).padRight(10f);
+            row.add(portBadge).padRight(8f);
 
             // Server name
             Label nameLabel = row.add(s.name).left().growX().get();
             nameLabel.setFontScale(0.9f);
             nameLabel.setColor(Color.white);
 
-            // Players indicator if present
-            if (s.players > 0) {
-                Label playersLbl = row.add(Core.bundle.format("admintools.portal.players", s.players)).color(LucidTheme.textDim).padRight(8f).get();
-                playersLbl.setFontScale(0.85f);
-            }
+            // Ping indicator
+            Label pingLbl = row.add("[gray]" + s.ping + "ms[]").padRight(8f).get();
+            pingLbl.setFontScale(0.80f);
+
+            // Players indicator
+            Label playersLbl = row.add(Core.bundle.format("admintools.portal.players", s.players)).color(s.players > 0 ? LucidTheme.textMuted : LucidTheme.textDim).padRight(4f).get();
+            playersLbl.setFontScale(0.85f);
 
             var listener = row.clicked(() -> connect(s.port));
             row.update(() -> row.background(listener.isOver() ? LucidTheme.glass(LucidTheme.bgHover, LucidTheme.accent) : LucidTheme.glass(LucidTheme.bgCard, LucidTheme.borderSubtle)));
 
-            serverListTable.add(row).growX().padBottom(6f).row();
+            serverListTable.add(row).growX().padBottom(5f).row();
         }
     }
 

@@ -120,6 +120,63 @@ public class LucidTheme {
         return style;
     }
 
+    public static TextButtonStyle accentTextButtonStyle() {
+        var style = new TextButtonStyle();
+        style.font = Styles.defaultt.font;
+        style.fontColor = Color.white;
+        style.overFontColor = Color.white;
+        style.downFontColor = Color.white;
+        style.up = glass(accent.cpy().a(0.22f), accent.cpy().a(0.85f));
+        style.over = glass(accent.cpy().a(0.38f), Color.white);
+        style.down = glass(accent.cpy().a(0.55f), accent);
+        return style;
+    }
+
+    public static TextButtonStyle dangerTextButtonStyle() {
+        var style = new TextButtonStyle();
+        style.font = Styles.defaultt.font;
+        style.fontColor = Color.white;
+        style.overFontColor = Color.white;
+        style.downFontColor = Color.white;
+        style.up = glass(danger.cpy().a(0.25f), danger.cpy().a(0.85f));
+        style.over = glass(danger.cpy().a(0.42f), Color.white);
+        style.down = glass(danger.cpy().a(0.60f), danger);
+        return style;
+    }
+
+    public static TextButtonStyle secondaryTextButtonStyle() {
+        var style = new TextButtonStyle();
+        style.font = Styles.defaultt.font;
+        style.fontColor = textMuted;
+        style.overFontColor = Color.white;
+        style.downFontColor = Color.white;
+        style.up = glass(bgCard, borderIdle);
+        style.over = glass(bgHover, textMuted);
+        style.down = glass(bgActive, accent);
+        return style;
+    }
+
+    public static TextButtonStyle chipButtonStyle(boolean active) {
+        var style = new TextButtonStyle();
+        style.font = Styles.defaultt.font;
+        style.fontColor = active ? Pal.accent : textMuted;
+        style.overFontColor = Color.white;
+        style.downFontColor = Pal.accent;
+        style.up = active ? glass(accent.cpy().a(0.22f), accent.cpy().a(0.85f)) : glass(bgCard, borderSubtle);
+        style.over = active ? glass(accent.cpy().a(0.35f), Color.white) : glass(bgHover, borderIdle);
+        style.down = glass(bgActive, accent);
+        return style;
+    }
+
+    public static TextFieldStyle transparentFieldStyle() {
+        var style = new TextFieldStyle(Styles.defaultField);
+        style.background = Tex.clear;
+        style.focusedBackground = Tex.clear;
+        style.fontColor = Color.white;
+        style.messageFontColor = textDim;
+        return style;
+    }
+
     public static ImageButtonStyle glassImageButtonStyle() {
         var style = new ImageButtonStyle();
         style.up = glass(bgCard, borderSubtle);

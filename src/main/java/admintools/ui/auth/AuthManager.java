@@ -39,6 +39,10 @@ public class AuthManager {
     // Immutable snapshot representing authoritative state from server
     private AuthSnapshot snapshot = AuthSnapshot.initial();
 
+    public void setSnapshot(AuthSnapshot snapshot) {
+        this.snapshot = snapshot;
+    }
+
     // Ephemeral UI / request state
     private boolean isRequestPending = false;
     private int currentRequestId = 0;

@@ -155,17 +155,19 @@ public class DataTable<T> extends Table {
         countInfoLabel.setFontScale(0.85f);
         footerTable.add(countInfoLabel).left().growX();
 
-        var prevBtn = new TextButton(Iconc.left + "", Styles.cleart);
+        var prevBtn = new arc.scene.ui.ImageButton(mindustry.gen.Icon.left, Styles.clearNonei);
+        prevBtn.getStyle().imageUpColor = LucidTheme.textDim;
         prevBtn.clicked(() -> changePage(-1));
-        footerTable.add(prevBtn).size(28f);
+        footerTable.add(prevBtn).size(24f);
 
         pageInfoLabel.setColor(Pal.accent);
         pageInfoLabel.setFontScale(0.85f);
-        footerTable.add(pageInfoLabel).pad(0, 10f, 0, 10f);
+        footerTable.add(pageInfoLabel).pad(0, 8f, 0, 8f);
 
-        var nextBtn = new TextButton(Iconc.right + "", Styles.cleart);
+        var nextBtn = new arc.scene.ui.ImageButton(mindustry.gen.Icon.right, Styles.clearNonei);
+        nextBtn.getStyle().imageUpColor = LucidTheme.textDim;
         nextBtn.clicked(() -> changePage(1));
-        footerTable.add(nextBtn).size(28f);
+        footerTable.add(nextBtn).size(24f);
 
         scrollPane = new ScrollPane(contentTable);
         scrollPane.setOverscroll(false, false);
@@ -215,6 +217,7 @@ public class DataTable<T> extends Table {
         Column<T> col = text(title, iconExtractor, false);
         col.role = ColumnRole.ICON;
         col.policy = WidthPolicy.AUTO;
+        col.minWidth = 38f;
         col.align = Align.center;
         col.ellipsis = false;
         return col;
@@ -225,6 +228,7 @@ public class DataTable<T> extends Table {
         Column<T> col = text(title, timeExtractor, true);
         col.role = ColumnRole.TIME;
         col.policy = WidthPolicy.AUTO;
+        col.minWidth = 76f;
         col.align = Align.center;
         col.ellipsis = false;
         return col;
@@ -233,10 +237,14 @@ public class DataTable<T> extends Table {
     /** Adds an action button column (e.g. Ban, View, Delete). */
     public Column<T> action(String title, Drawable icon, Cons<T> onClick) {
         Column<T> col = new Column<>(title, (cell, item) -> {
-            UiBuilder.iconButton(cell, icon, () -> onClick.get(item)).size(28f);
+            arc.scene.ui.ImageButton btn = new arc.scene.ui.ImageButton(icon, LucidTheme.glassImageButtonStyle());
+            btn.getStyle().imageUpColor = LucidTheme.danger;
+            btn.clicked(() -> onClick.get(item));
+            cell.add(btn).size(26f);
         }, false, null);
         col.role = ColumnRole.ACTION;
         col.policy = WidthPolicy.AUTO;
+        col.minWidth = 48f;
         col.align = Align.center;
         columns.add(col);
         refresh();
@@ -359,11 +367,12 @@ public class DataTable<T> extends Table {
 
     private static float measureText(String text, float fontScale) {
         if (text == null || text.isEmpty()) return 0f;
+        String stripped = arc.util.Strings.stripColors(text);
         if (measureLabel == null) {
             measureLabel = new Label("", Styles.defaultLabel);
         }
         measureLabel.setFontScale(fontScale);
-        measureLabel.setText(text);
+        measureLabel.setText(stripped);
         return measureLabel.getPrefWidth();
     }
 
@@ -402,14 +411,14 @@ public class DataTable<T> extends Table {
             }
 
             // 1. Measure header text with padding
-            float headerW = measureText(col.title, 0.85f) + Scl.scl(20f);
+            float headerW = measureText(col.title, 0.85f) + Scl.scl(10f);
             float maxContentW = 0f;
 
             // 2. Measure content intrinsic width
             if (col.role == ColumnRole.ACTION) {
-                maxContentW = Scl.scl(32f);
-            } else if (col.role == ColumnRole.ICON) {
                 maxContentW = Scl.scl(28f);
+            } else if (col.role == ColumnRole.ICON) {
+                maxContentW = Scl.scl(24f);
             } else if (col.customMeasurer != null) {
                 maxContentW = col.customMeasurer.get();
             } else if (col.textExtractor != null) {
@@ -423,14 +432,14 @@ public class DataTable<T> extends Table {
                 }
             }
 
-            float contentPadding = Scl.scl(20f);
+            float contentPadding = Scl.scl(10f);
             float requiredW = Math.max(headerW, maxContentW + contentPadding);
 
             if (col.minWidth > 0) {
                 requiredW = Math.max(requiredW, Scl.scl(col.minWidth));
             }
 
-            intrinsicWidths[i] = Math.max(requiredW, Scl.scl(36f));
+            intrinsicWidths[i] = Math.max(requiredW, Scl.scl(32f));
 
             if (col.policy == WidthPolicy.FLEX) {
                 totalFlexWeight += col.weight;
@@ -486,7 +495,7 @@ public class DataTable<T> extends Table {
 
             Table colCell = new Table();
             colCell.background(LucidTheme.glass(LucidTheme.bgHeader, LucidTheme.borderSubtle));
-            colCell.margin(6f, 8f, 6f, 8f);
+            colCell.margin(6f, 5f, 6f, 5f);
             colCell.align(col.align);
 
             String sortIndicator = "";
@@ -504,7 +513,7 @@ public class DataTable<T> extends Table {
                 colCell.clicked(() -> toggleSort(colIndex));
             }
 
-            var cell = contentTable.add(colCell).pad(1f).fill();
+            var cell = contentTable.add(colCell).pad(0.5f).fill();
             cell.width(colWidths[i] / Scl.scl());
         }
         contentTable.row();
@@ -521,14 +530,14 @@ public class DataTable<T> extends Table {
                 if (isAlt) {
                     cellContent.background(LucidTheme.glass(LucidTheme.bgCard.cpy().a(0.40f), null));
                 }
-                cellContent.margin(5f, 8f, 5f, 8f);
+                cellContent.margin(5f, 5f, 5f, 5f);
                 cellContent.align(col.align);
 
                 if (col.cellBuilder != null) {
                     col.cellBuilder.get(cellContent, item);
                 }
 
-                var cell = contentTable.add(cellContent).pad(1f).fill();
+                var cell = contentTable.add(cellContent).pad(0.5f).fill();
                 cell.width(colWidths[c] / Scl.scl());
             }
             contentTable.row();

@@ -54,18 +54,19 @@ public class FloatingWindow extends Table implements AutoCloseable {
 
         // 1. Title bar setup - spacious and clear
         titleBar.background(LucidTheme.headerBg(false));
-        titleBar.margin(6f, 12f, 6f, 10f);
+        titleBar.margin(7f, 12f, 7f, 8f);
 
         if (spec.icon() != null) {
-            titleBar.image(spec.icon()).size(20f).padRight(12f);
+            titleBar.image(spec.icon()).size(20f).padRight(8f);
         }
 
         titleLabel = titleBar.add(spec.title()).color(Pal.accent).growX().left().get();
+        titleLabel.setFontScale(0.9f);
 
         if (spec.collapsible()) {
             collapseBtn = new ImageButton(Icon.upOpen, Styles.clearNonei);
             collapseBtn.clicked(this::toggleCollapse);
-            titleBar.add(collapseBtn).size(26f).padRight(4f);
+            titleBar.add(collapseBtn).size(26f).padRight(2f);
         } else {
             collapseBtn = null;
         }
@@ -75,7 +76,7 @@ public class FloatingWindow extends Table implements AutoCloseable {
         titleBar.add(closeBtn).size(26f);
 
         // 2. Content area setup with clean padding
-        contentArea.margin(10f);
+        contentArea.margin(10f, 10f, 4f, 10f);
         contentArea.top().left();
 
         // 3. Bottom bar & Resize grip
@@ -93,16 +94,16 @@ public class FloatingWindow extends Table implements AutoCloseable {
                 Draw.color();
             }
         };
-        resizeGrip.setSize(Scl.scl(14f), Scl.scl(14f));
+        resizeGrip.setSize(Scl.scl(12f), Scl.scl(12f));
 
         bottomBar.right().bottom();
         bottomBar.margin(0f, 4f, 2f, 4f);
-        bottomBar.add(resizeGrip).size(14f);
+        bottomBar.add(resizeGrip).size(12f);
 
         // 4. Assemble layout
-        add(titleBar).growX().height(36f).row();
+        add(titleBar).growX().height(38f).row();
         add(contentArea).grow().row();
-        add(bottomBar).growX().height(10f);
+        add(bottomBar).growX().height(8f);
 
         setSize(Scl.scl(spec.defaultWidth()), uncollapsedHeight);
 
@@ -249,11 +250,25 @@ public class FloatingWindow extends Table implements AutoCloseable {
 
     public void clampToBounds() {
         if (parent == null || parent.getWidth() <= 0) return;
-        float maxX = Math.max(0, parent.getWidth() - width);
-        float maxY = Math.max(0, parent.getHeight() - height);
+        float margin = Scl.scl(6f);
+
+        // Auto-adapt window size to fit within smaller parent screens (Mobile responsiveness)
+        float maxW = Math.max(Scl.scl(spec.minWidth()), parent.getWidth() - margin * 2f);
+        float maxH = Math.max(Scl.scl(spec.minHeight()), parent.getHeight() - margin * 2f);
+
+        if (width > maxW || (!collapsed && height > maxH)) {
+            float newW = Math.min(width, maxW);
+            float newH = collapsed ? height : Math.min(height, maxH);
+            setSize(newW, newH);
+            if (!collapsed) uncollapsedHeight = newH;
+            invalidateHierarchy();
+        }
+
+        float maxX = Math.max(margin, parent.getWidth() - width - margin);
+        float maxY = Math.max(margin, parent.getHeight() - height - margin);
         setPosition(
-            Mathf.clamp(x, 0, maxX),
-            Mathf.clamp(y, 0, maxY)
+            Mathf.clamp(x, margin, maxX),
+            Mathf.clamp(y, margin, maxY)
         );
     }
 

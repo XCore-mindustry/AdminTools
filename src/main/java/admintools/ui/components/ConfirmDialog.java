@@ -28,8 +28,8 @@ public class ConfirmDialog extends Dialog {
         buttons.margin(6f, 14f, 14f, 14f);
         float btnWidth = Math.min((dialogWidth - 16f) / 2f, 120f);
         buttons.defaults().size(btnWidth, 38f).pad(4f);
-        buttons.button("@cancel", Styles.defaultt, this::hide);
-        buttons.button("@ok", LucidTheme.flatTextButtonStyle(), () -> {
+        buttons.button("@cancel", LucidTheme.secondaryTextButtonStyle(), this::hide);
+        buttons.button("@ok", LucidTheme.accentTextButtonStyle(), () -> {
             hide();
             if (onConfirm != null) onConfirm.run();
         });

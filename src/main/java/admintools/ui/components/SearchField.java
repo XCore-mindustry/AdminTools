@@ -22,21 +22,22 @@ public class SearchField extends Table {
 
     public SearchField(String placeholder, Cons<String> onSearch) {
         background(LucidTheme.glass(LucidTheme.bgCard, LucidTheme.borderSubtle));
-        margin(5f, 12f, 5f, 12f);
+        margin(4f, 10f, 4f, 10f);
 
         // 1. Search Icon with clear gap
         Image icon = new Image(Icon.zoom);
         icon.setColor(LucidTheme.textDim);
-        add(icon).size(18f).padRight(10f);
+        add(icon).size(18f).padRight(8f);
 
-        // 2. Text input
+        // 2. Text input with sleek transparent styling (no default underline)
         field = new TextField("");
         field.setMessageText(placeholder);
-        field.setStyle(Styles.defaultField);
-        add(field).growX().height(28f);
+        field.setStyle(LucidTheme.transparentFieldStyle());
+        add(field).growX().height(26f);
 
         // 3. Clear button
         clearBtn = new ImageButton(Icon.cancel, Styles.clearNonei);
+        clearBtn.getStyle().imageUpColor = LucidTheme.textDim;
         clearBtn.visible = false;
         clearBtn.clicked(() -> {
             field.setText("");
@@ -44,7 +45,7 @@ public class SearchField extends Table {
             if (debounceTask != null) debounceTask.cancel();
             onSearch.get("");
         });
-        add(clearBtn).size(20f).padLeft(6f);
+        add(clearBtn).size(20f).padLeft(4f);
 
         // Typing handler with debounce
         field.changed(() -> {

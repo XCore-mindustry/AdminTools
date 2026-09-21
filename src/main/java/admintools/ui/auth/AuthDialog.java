@@ -84,7 +84,7 @@ public class AuthDialog extends Dialog {
 
     private float getFormWidth() {
         float screenW = (Core.scene.getWidth() - Core.scene.marginLeft - Core.scene.marginRight) / Scl.scl(1f);
-        return Math.max(260f, Math.min(screenW - 36f, 340f));
+        return Math.max(320f, Math.min(screenW - 36f, 430f));
     }
 
     public void rebuildUI() {
@@ -126,7 +126,7 @@ public class AuthDialog extends Dialog {
                 cmdLbl.setFontScale(1.05f);
                 codeBox.add(cmdLbl).growX().left().padRight(8f);
 
-                TextButton copyBtn = new TextButton("@admintools.auth.copy", LucidTheme.flatTextButtonStyle());
+                TextButton copyBtn = new TextButton("@admintools.auth.copy", LucidTheme.accentTextButtonStyle());
                 copyBtn.clicked(() -> {
                     Core.app.setClipboardText("/link " + activeCode);
                     ToastManager.info(Core.bundle.get("admintools.auth.copied"));
@@ -157,7 +157,7 @@ public class AuthDialog extends Dialog {
                 buttons.margin(6f, 16f, 14f, 16f);
                 float btnWidth = Math.min((formWidth - 12f) / 2f, 120f);
                 buttons.defaults().size(btnWidth, 38f).pad(4f);
-                buttons.button("@cancel", Styles.defaultt, () -> {
+                buttons.button("@cancel", LucidTheme.secondaryTextButtonStyle(), () -> {
                     AuthManager.get().clearActiveLinkCode();
                     rebuildUI();
                 });
@@ -172,7 +172,7 @@ public class AuthDialog extends Dialog {
                 form.add(desc).growX().padBottom(16f).row();
 
                 // Request Link Code Button
-                TextButton linkBtn = new TextButton("@admintools.auth.get_link_code", LucidTheme.flatTextButtonStyle());
+                TextButton linkBtn = new TextButton("@admintools.auth.get_link_code", LucidTheme.accentTextButtonStyle());
                 linkBtn.clicked(() -> {
                     statusLabel.setColor(Pal.accent);
                     statusLabel.setText(Core.bundle.get("admintools.auth.generating_code"));
@@ -185,7 +185,7 @@ public class AuthDialog extends Dialog {
                 buttons.margin(6f, 16f, 14f, 16f);
                 float btnWidth = Math.min((formWidth - 12f) / 2f, 120f);
                 buttons.defaults().size(btnWidth, 38f).pad(4f);
-                buttons.button("@close", Styles.defaultt, this::hide);
+                buttons.button("@close", LucidTheme.secondaryTextButtonStyle(), this::hide);
             }
         } else {
             // Discord IS linked: render authentication form
@@ -203,14 +203,15 @@ public class AuthDialog extends Dialog {
             // Password input row with inline eye toggle
             Table passRow = new Table();
             passRow.background(LucidTheme.glass(LucidTheme.bgCard, LucidTheme.borderSubtle));
-            passRow.margin(4f, 8f, 4f, 8f);
+            passRow.margin(4f, 10f, 4f, 8f);
 
-            passwordField = new TextField("", Styles.defaultField);
+            passwordField = new TextField("", LucidTheme.transparentFieldStyle());
             passwordField.setPasswordMode(!passwordVisible);
             passwordField.setPasswordCharacter('*');
             passwordField.setMessageText(AuthManager.get().hasPassword() ? Core.bundle.get("admintools.auth.pass_placeholder") : Core.bundle.format("admintools.auth.create_pass_placeholder", AuthManager.MIN_PASSWORD_LENGTH));
 
             ImageButton eyeBtn = new ImageButton(passwordVisible ? Icon.eyeOff : Icon.eye, Styles.clearNonei);
+            eyeBtn.getStyle().imageUpColor = LucidTheme.textDim;
             eyeBtn.clicked(() -> {
                 passwordVisible = !passwordVisible;
                 passwordField.setPasswordMode(!passwordVisible);
@@ -247,8 +248,8 @@ public class AuthDialog extends Dialog {
             buttons.margin(6f, 16f, 14f, 16f);
             float btnWidth = Math.min((formWidth - 12f) / 2f, 120f);
             buttons.defaults().size(btnWidth, 38f).pad(4f);
-            buttons.button("@cancel", Styles.defaultt, this::hide);
-            buttons.button(AuthManager.get().hasPassword() ? "@admintools.auth.login" : "@admintools.auth.create", LucidTheme.flatTextButtonStyle(), this::submit);
+            buttons.button("@cancel", LucidTheme.secondaryTextButtonStyle(), this::hide);
+            buttons.button(AuthManager.get().hasPassword() ? "@admintools.auth.login" : "@admintools.auth.create", LucidTheme.accentTextButtonStyle(), this::submit);
 
             passwordField.keyDown(key -> {
                 if (key == KeyCode.enter) {

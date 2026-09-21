@@ -30,11 +30,13 @@ public class FreeCamHUD extends Table {
 
         // Recenter on player unit
         ImageButton centerBtn = new ImageButton(Icon.home, Styles.clearNonei);
+        centerBtn.getStyle().imageUpColor = Pal.accent;
         centerBtn.clicked(() -> FreeCamController.get().centerOnPlayer());
-        pill.add(centerBtn).size(24f).padRight(6f);
+        pill.add(centerBtn).size(24f).padRight(4f);
 
         // Exit FreeCam
         ImageButton closeBtn = new ImageButton(Icon.cancel, Styles.clearNonei);
+        closeBtn.getStyle().imageUpColor = LucidTheme.textDim;
         closeBtn.clicked(() -> FreeCamController.get().setActive(false));
         pill.add(closeBtn).size(24f);
 

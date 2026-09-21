@@ -14,6 +14,7 @@ import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Strings;
 import arc.util.serialization.JsonReader;
@@ -60,18 +61,19 @@ public class BanDialog extends Dialog {
         // 1. Custom Title Bar using Dialog's native titleTable (Row 0)
         titleTable.clear();
         titleTable.background(LucidTheme.glass(LucidTheme.bgHeader, LucidTheme.borderSubtle));
-        titleTable.margin(8f, 14f, 8f, 10f);
+        titleTable.margin(7f, 14f, 7f, 10f);
 
-        titleTable.image(Icon.hammer).size(22f).color(Pal.accent).padRight(8f);
+        titleTable.image(Icon.hammer).size(20f).color(Pal.accent).padRight(8f);
         titleTable.add("@admintools.dialog.ban_title").color(Pal.accent).growX().left();
 
         ImageButton closeBtn = new ImageButton(Icon.cancel, Styles.clearNonei);
+        closeBtn.getStyle().imageUpColor = LucidTheme.textDim;
         closeBtn.clicked(this::cancel);
         titleTable.add(closeBtn).size(24f);
 
         // 2. Main Form Content Area
         float screenW = (Core.scene.getWidth() - Core.scene.marginLeft - Core.scene.marginRight) / Scl.scl(1f);
-        float formWidth = Math.max(280f, Math.min(screenW - 36f, 380f));
+        float formWidth = Math.max(340f, Math.min(screenW - 36f, 440f));
         float maxH = Math.max(160f, (Core.scene.getHeight() - Core.scene.marginTop - Core.scene.marginBottom) / Scl.scl(1f) - 130f);
 
         cont.clear();
@@ -120,36 +122,84 @@ public class BanDialog extends Dialog {
             "admintools.ban.reason.6"
         };
 
-        Table row1 = new Table(); row1.left();
-        Table row2 = new Table(); row2.left();
+        Seq<TextButton> allReasonButtons = new Seq<>();
+        boolean isMobileNarrow = formWidth < 360f;
 
-        for (int i = 0; i < chipKeys.length; i++) {
-            String chipText = Core.bundle.get(chipKeys[i]);
-            String fullReason = Core.bundle.get(presetKeys[i]);
-            Table targetRow = (i < 3) ? row1 : row2;
-
-            TextButton chip = new TextButton(chipText, LucidTheme.flatTextButtonStyle());
-            chip.getLabel().setFontScale(0.82f);
-            chip.clicked(() -> {
-                if (reasonField != null) {
-                    reasonField.setText(fullReason);
+        if (isMobileNarrow) {
+            int[][] narrowRows = {{0, 1}, {3, 2}, {4, 5}};
+            for (int r = 0; r < narrowRows.length; r++) {
+                Table row = new Table(); row.left();
+                for (int idx : narrowRows[r]) {
+                    String chipText = Core.bundle.get(chipKeys[idx]);
+                    String fullReason = Core.bundle.get(presetKeys[idx]);
+                    TextButton chip = new TextButton(chipText, LucidTheme.chipButtonStyle(idx == 0));
+                    chip.getLabel().setFontScale(0.82f);
+                    chip.getLabel().setWrap(false);
+                    allReasonButtons.add(chip);
+                    chip.clicked(() -> {
+                        if (reasonField != null) reasonField.setText(fullReason);
+                        for (int b = 0; b < allReasonButtons.size; b++) {
+                            TextButton btn = allReasonButtons.get(b);
+                            btn.setStyle(LucidTheme.chipButtonStyle(btn == chip));
+                        }
+                    });
+                    row.add(chip).height(28f).padRight(5f);
                 }
-            });
-            targetRow.add(chip).height(28f).padRight(4f).padBottom(4f);
-        }
+                reasonChips.add(row).left().padBottom(r < narrowRows.length - 1 ? 4f : 0f).row();
+            }
+        } else {
+            int[] row1Indices = {0, 1, 3}; // Griefing, Toxicity, Bug Abuse
+            int[] row2Indices = {2, 4, 5}; // Vote-kick, Ban Evasion, NSFW
+            Table row1 = new Table(); row1.left();
+            Table row2 = new Table(); row2.left();
 
-        reasonChips.add(row1).left().row();
-        reasonChips.add(row2).left().row();
-        form.add(reasonChips).growX().padBottom(6f).row();
+            for (int idx : row1Indices) {
+                String chipText = Core.bundle.get(chipKeys[idx]);
+                String fullReason = Core.bundle.get(presetKeys[idx]);
+                TextButton chip = new TextButton(chipText, LucidTheme.chipButtonStyle(idx == 0));
+                chip.getLabel().setFontScale(0.84f);
+                chip.getLabel().setWrap(false);
+                allReasonButtons.add(chip);
+                chip.clicked(() -> {
+                    if (reasonField != null) reasonField.setText(fullReason);
+                    for (int b = 0; b < allReasonButtons.size; b++) {
+                        TextButton btn = allReasonButtons.get(b);
+                        btn.setStyle(LucidTheme.chipButtonStyle(btn == chip));
+                    }
+                });
+                row1.add(chip).height(28f).padRight(5f);
+            }
+
+            for (int idx : row2Indices) {
+                String chipText = Core.bundle.get(chipKeys[idx]);
+                String fullReason = Core.bundle.get(presetKeys[idx]);
+                TextButton chip = new TextButton(chipText, LucidTheme.chipButtonStyle(false));
+                chip.getLabel().setFontScale(0.84f);
+                chip.getLabel().setWrap(false);
+                allReasonButtons.add(chip);
+                chip.clicked(() -> {
+                    if (reasonField != null) reasonField.setText(fullReason);
+                    for (int b = 0; b < allReasonButtons.size; b++) {
+                        TextButton btn = allReasonButtons.get(b);
+                        btn.setStyle(LucidTheme.chipButtonStyle(btn == chip));
+                    }
+                });
+                row2.add(chip).height(28f).padRight(5f);
+            }
+
+            reasonChips.add(row1).left().padBottom(4f).row();
+            reasonChips.add(row2).left().row();
+        }
+        form.add(reasonChips).growX().padBottom(8f).row();
 
         // Custom Reason Input Field
         Table reasonFieldBox = new Table();
         reasonFieldBox.background(LucidTheme.glass(LucidTheme.bgCard, LucidTheme.borderSubtle));
-        reasonFieldBox.margin(4f, 8f, 4f, 8f);
+        reasonFieldBox.margin(4f, 10f, 4f, 10f);
 
-        reasonField = new TextField(Core.bundle.get(presetKeys[0]), Styles.defaultField);
+        reasonField = new TextField(Core.bundle.get(presetKeys[0]), LucidTheme.transparentFieldStyle());
         reasonField.setMessageText(Core.bundle.get("admintools.ban.reason"));
-        reasonFieldBox.add(reasonField).growX().height(30f);
+        reasonFieldBox.add(reasonField).growX().height(28f);
         form.add(reasonFieldBox).growX().padBottom(10f).row();
 
         // Duration Label
@@ -160,32 +210,65 @@ public class BanDialog extends Dialog {
         durationChips.left();
 
         String[] durationPresets = {"1h", "1d", "3d", "7d", "30d", "0"};
-        for (String dur : durationPresets) {
-            String label = "0".equals(dur) ? "perm (0)" : dur;
-            TextButton dChip = new TextButton(label, LucidTheme.flatTextButtonStyle());
-            dChip.getLabel().setFontScale(0.82f);
-            dChip.clicked(() -> {
-                if (durationField != null) {
-                    durationField.setText(dur);
-                }
-            });
-            durationChips.add(dChip).height(28f).padRight(4f);
+        String[] durationLabels = {"1h", "1d", "3d", "7d", "30d", "perm"};
+        Seq<TextButton> allDurationButtons = new Seq<>();
+
+        if (isMobileNarrow) {
+            Table dRow1 = new Table(); dRow1.left();
+            Table dRow2 = new Table(); dRow2.left();
+            for (int i = 0; i < durationPresets.length; i++) {
+                String dur = durationPresets[i];
+                String label = durationLabels[i];
+                TextButton dChip = new TextButton(label, LucidTheme.chipButtonStyle(dur.equals("1d")));
+                dChip.getLabel().setFontScale(0.84f);
+                dChip.getLabel().setWrap(false);
+                allDurationButtons.add(dChip);
+                dChip.clicked(() -> {
+                    if (durationField != null) durationField.setText(dur);
+                    for (int b = 0; b < allDurationButtons.size; b++) {
+                        TextButton btn = allDurationButtons.get(b);
+                        btn.setStyle(LucidTheme.chipButtonStyle(btn == dChip));
+                    }
+                });
+                (i < 3 ? dRow1 : dRow2).add(dChip).height(28f).padRight(5f);
+            }
+            durationChips.add(dRow1).left().padBottom(4f).row();
+            durationChips.add(dRow2).left().row();
+        } else {
+            for (int i = 0; i < durationPresets.length; i++) {
+                String dur = durationPresets[i];
+                String label = durationLabels[i];
+                TextButton dChip = new TextButton(label, LucidTheme.chipButtonStyle(dur.equals("1d")));
+                dChip.getLabel().setFontScale(0.84f);
+                dChip.getLabel().setWrap(false);
+                allDurationButtons.add(dChip);
+                dChip.clicked(() -> {
+                    if (durationField != null) durationField.setText(dur);
+                    for (int b = 0; b < allDurationButtons.size; b++) {
+                        TextButton btn = allDurationButtons.get(b);
+                        btn.setStyle(LucidTheme.chipButtonStyle(btn == dChip));
+                    }
+                });
+                durationChips.add(dChip).height(28f).padRight(5f);
+            }
         }
-        form.add(durationChips).left().padBottom(6f).row();
+        form.add(durationChips).left().padBottom(8f).row();
 
         // Custom Duration Input Field
         Table durationFieldBox = new Table();
         durationFieldBox.background(LucidTheme.glass(LucidTheme.bgCard, LucidTheme.borderSubtle));
-        durationFieldBox.margin(4f, 8f, 4f, 8f);
+        durationFieldBox.margin(4f, 10f, 4f, 10f);
 
-        durationField = new TextField("1d", Styles.defaultField);
-        durationFieldBox.add(durationField).growX().height(30f);
+        durationField = new TextField("1d", LucidTheme.transparentFieldStyle());
+        durationFieldBox.add(durationField).growX().height(28f);
         form.add(durationFieldBox).growX().padBottom(10f).row();
 
         // Rollback Checkbox
         rollbackBox = new CheckBox("@admintools.ban.rollback");
+        rollbackBox.getLabel().setColor(Color.white);
+        rollbackBox.getLabel().setFontScale(0.9f);
         rollbackBox.setChecked(false);
-        form.add(rollbackBox).left().padBottom(6f).row();
+        form.add(rollbackBox).left().padTop(2f).padBottom(8f).row();
 
         Cell<ScrollPane> paneCell = cont.pane(form);
         if (paneCell.get() != null) {
@@ -196,12 +279,12 @@ public class BanDialog extends Dialog {
 
         // 3. Action Buttons
         buttons.clear();
-        buttons.margin(6f, 14f, 14f, 14f);
-        float btnWidth = Math.min((formWidth - 16f) / 2f, 120f);
+        buttons.margin(8f, 14f, 14f, 14f);
+        float btnWidth = Math.min((formWidth - 16f) / 2f, 130f);
         buttons.defaults().size(btnWidth, 38f).pad(4f);
 
-        buttons.button("@cancel", Styles.defaultt, this::cancel);
-        buttons.button("@admintools.action.ban", LucidTheme.flatTextButtonStyle(), this::submit);
+        buttons.button("@cancel", LucidTheme.secondaryTextButtonStyle(), this::cancel);
+        buttons.button("@admintools.action.ban", LucidTheme.dangerTextButtonStyle(), this::submit);
 
         closeOnBack(this::cancel);
 
