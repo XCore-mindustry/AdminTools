@@ -51,6 +51,18 @@ public class AdminTools extends Mod {
         Events.on(EventType.ClientLoadEvent.class, e -> {
             ui = new UIController();
 
+            // Dev harness: dynamically loaded only if explicit dev properties are set
+            if (System.getProperty("admintools.screen") != null
+                || System.getProperty("admintools.dev") != null
+                || System.getProperty("admintools.screenshot") != null) {
+                try {
+                    Class.forName("admintools.dev.DevHarness")
+                        .getMethod("init", UIController.class)
+                        .invoke(null, ui);
+                } catch (Throwable ignored) {
+                }
+            }
+
             // Anti-leak hook on chatfield to intercept /login and prevent accidental password leakage (Desktop + Mobile)
             try {
                 TextField chatfield = Reflect.get(Vars.ui.chatfrag, "chatfield");

@@ -85,6 +85,10 @@ public class QuickDock extends Table {
         });
     }
 
+    public boolean isCollapsed() {
+        return isCollapsed;
+    }
+
     public void toggleCollapse() {
         isCollapsed = !isCollapsed;
         rebuildLayout();

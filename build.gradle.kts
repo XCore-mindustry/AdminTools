@@ -10,6 +10,7 @@ plugins {
 
 val metadata = ModMetadata.fromJson(project.file("mod.json"))
 version = metadata.version
+val isRelease = project.hasProperty("release")
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -51,6 +52,20 @@ tasks {
         from({
             configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }
         })
+        if (isRelease) {
+            exclude("admintools/dev/**")
+        }
+    }
+
+    named<JavaExec>("runMindustryDesktop") {
+        listOf("screen", "mobile", "mobile.landscape", "screenshot", "width", "height", "delay", "exit", "dev").forEach { key ->
+            val prop = "admintools.$key"
+            if (System.getProperty(prop) != null) {
+                systemProperty(prop, System.getProperty(prop))
+            } else if (project.hasProperty(key)) {
+                systemProperty(prop, project.property(key).toString())
+            }
+        }
     }
 
     mergeJar {
