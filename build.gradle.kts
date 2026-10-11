@@ -39,7 +39,7 @@ tasks.withType<JavaCompile>().configureEach {
 dependencies {
     compileOnly(toxopid.dependencies.mindustryCore)
     compileOnly(toxopid.dependencies.arcCore)
-    implementation("org.xcore:xcore-protocol-java:0.6.2")
+    implementation("org.xcore:xcore-protocol-java:0.12.0")
 }
 
 tasks {
