@@ -5,7 +5,7 @@ import com.xpdustry.toxopid.spec.ModPlatform
 
 plugins {
     java
-    id("com.xpdustry.toxopid") version "4.1.2"
+    id("com.xpdustry.toxopid") version "4.2.0"
 }
 
 val metadata = ModMetadata.fromJson(project.file("mod.json"))
@@ -39,7 +39,7 @@ tasks.withType<JavaCompile>().configureEach {
 dependencies {
     compileOnly(toxopid.dependencies.mindustryCore)
     compileOnly(toxopid.dependencies.arcCore)
-    implementation("org.xcore:xcore-protocol-java:0.6.2")
+    implementation("org.xcore:xcore-protocol-java:0.12.0")
 }
 
 tasks {
