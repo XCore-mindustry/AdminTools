@@ -84,4 +84,39 @@ class HistorySessionTest {
         state.reset();
         assertFalse(state.ready());
     }
+
+    @Test
+    void entryCapReportsPartialHistoryOnlyWhenRowsRemain() {
+        for (String cursor : new String[] {"", "older"}) {
+            var state = new HistorySession();
+            state.session("map");
+            state.begin(1);
+            for (int start = 1; start <= HistorySession.MAX_ENTRIES; start += 32) {
+                long[] sequences = new long[32];
+                for (int i = 0; i < sequences.length; i++)
+                    sequences[i] = start + i;
+                var page = page("map", 1, sequences);
+                page.nextCursor = cursor;
+                assertTrue(state.accept(page));
+            }
+            assertEquals(HistorySession.MAX_ENTRIES, state.entries().length);
+            assertFalse(state.more());
+            assertEquals("", state.cursor());
+            assertEquals(!cursor.isEmpty(), state.truncated());
+        }
+    }
+
+    @Test
+    void entryCapReportsDroppedRowsEvenWithoutAContinuation() {
+        var state = new HistorySession();
+        state.session("map");
+        state.begin(1);
+        for (int sequence = 1; sequence < HistorySession.MAX_ENTRIES; sequence++)
+            assertTrue(state.accept(page("map", 1, sequence)));
+        assertTrue(state.accept(page("map", 1, HistorySession.MAX_ENTRIES,
+                HistorySession.MAX_ENTRIES + 1)));
+        assertEquals(HistorySession.MAX_ENTRIES, state.entries().length);
+        assertTrue(state.truncated());
+        assertFalse(state.more());
+    }
 }

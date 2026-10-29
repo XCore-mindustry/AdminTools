@@ -27,10 +27,11 @@ public class AdminTools extends Mod {
     @Override
     public void init() {
         netClient.addPacketHandler("give_ban_data", BanDialog::new);
-        HistoryTransport.init();
 
         // Initialize unified AuthManager (handles adm_mod_begin, adm_auth_result, auto-login)
         AuthManager.get().init();
+        // Send adm_mod_end before the history capability handshake on the same connection.
+        HistoryTransport.init();
 
         // Restore original nickname from settings before any server connection or on reset
         Events.on(EventType.ClientServerConnectEvent.class, e -> {

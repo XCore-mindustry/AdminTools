@@ -86,16 +86,21 @@ public final class HistorySession {
         }
         if (page.requestId == 0 || page.requestId != activeRequest)
             return false;
+        boolean discarded = false;
         for (HistoryEntry entry : page.entries) {
             if (entries.size() < MAX_ENTRIES || entries.containsKey(entry.sequence))
                 entries.put(entry.sequence, entry);
+            else
+                discarded = true;
         }
         cursor = page.nextCursor == null ? "" : page.nextCursor;
-        truncated = page.truncated;
+        truncated = page.truncated || discarded;
         busy = false;
         failed = false;
-        if (entries.size() >= MAX_ENTRIES)
+        if (entries.size() >= MAX_ENTRIES) {
+            truncated |= !cursor.isEmpty();
             cursor = "";
+        }
         return true;
     }
     public HistoryEntry[] entries() {
