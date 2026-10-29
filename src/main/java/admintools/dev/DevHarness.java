@@ -3,6 +3,8 @@ package admintools.dev;
 import admintools.BanDialog;
 import admintools.HistoryEntry;
 import admintools.HistoryFrame;
+import admintools.HistoryPage;
+import admintools.HistoryTransport;
 import admintools.KarmaDetector;
 import admintools.UIController;
 import admintools.input.FreeCamController;
@@ -30,12 +32,12 @@ import mindustry.gen.Icon;
  * are supplied, and is stripped from the release JAR when building with -Prelease.
  */
 public class DevHarness {
-
     private static boolean initialized = false;
     private static UIController ui;
 
     public static void init(UIController controller) {
-        if (initialized) return;
+        if (initialized)
+            return;
         initialized = true;
         ui = controller;
 
@@ -53,7 +55,8 @@ public class DevHarness {
 
                 if (screenshotPath != null && !screenshotPath.isEmpty()) {
                     int delay = Integer.getInteger("admintools.delay", 30);
-                    boolean autoExit = !"false".equalsIgnoreCase(System.getProperty("admintools.exit", "true"));
+                    boolean autoExit =
+                            !"false".equalsIgnoreCase(System.getProperty("admintools.exit", "true"));
                     scheduleScreenshot(screenshotPath, delay, autoExit);
                 }
             });
@@ -67,8 +70,10 @@ public class DevHarness {
     private static void configureDisplay() {
         String mobileProp = System.getProperty("admintools.mobile");
         if (mobileProp != null) {
-            boolean isLandscape = "landscape".equalsIgnoreCase(mobileProp) || Boolean.getBoolean("admintools.mobile.landscape");
-            boolean isMobile = "true".equalsIgnoreCase(mobileProp) || "portrait".equalsIgnoreCase(mobileProp) || isLandscape;
+            boolean isLandscape = "landscape".equalsIgnoreCase(mobileProp)
+                    || Boolean.getBoolean("admintools.mobile.landscape");
+            boolean isMobile = "true".equalsIgnoreCase(mobileProp)
+                    || "portrait".equalsIgnoreCase(mobileProp) || isLandscape;
 
             if (isMobile) {
                 Vars.mobile = true;
@@ -118,9 +123,11 @@ public class DevHarness {
                 mockHistoryData();
                 ui.historyWindow.show();
                 ui.historyWindow.setPosition(40f, 120f);
+                ui.historyWindow.clampToBounds();
             }
             case "ban" -> {
-                new BanDialog("{\"name\":\"Griefer_Target\",\"pid\":42,\"ip\":\"127.0.0.1\",\"id\":\"abc12345\"}");
+                new BanDialog(
+                        "{\"name\":\"Griefer_Target\",\"pid\":42,\"ip\":\"127.0.0.1\",\"id\":\"abc12345\"}");
             }
             case "auth" -> {
                 AuthDialog.showDialog();
@@ -176,7 +183,9 @@ public class DevHarness {
         h1.name = "Vova_Griefer";
         h1.block = 1;
         h1.destroy = true;
-        h1.time = 3665;
+        h1.time = 70000;
+        h1.sequence = 3;
+        h1.action = "Destroy completed";
         h1.rotation = 1;
         h1.valid = true;
         h1.config = "copper";
@@ -185,7 +194,9 @@ public class DevHarness {
         h2.name = "MegaBuilder2026";
         h2.block = 4;
         h2.destroy = false;
-        h2.time = 3600;
+        h2.time = 69990;
+        h2.sequence = 2;
+        h2.action = "Build completed";
         h2.rotation = 0;
         h2.valid = true;
         h2.config = null;
@@ -194,12 +205,24 @@ public class DevHarness {
         h3.name = "SuspiciousGuy";
         h3.block = 2;
         h3.destroy = true;
-        h3.time = 620;
+        h3.time = 69980;
+        h3.sequence = 1;
+        h3.action = "Configure";
         h3.rotation = 3;
         h3.valid = false;
         h3.config = null;
 
-        HistoryFrame.update(new HistoryEntry[]{h1, h2, h3});
+        HistoryTransport.state.session("dev-preview");
+        HistoryTransport.state.begin(1);
+        HistoryPage page = new HistoryPage();
+        page.version = 2;
+        page.requestId = 1;
+        page.sessionId = "dev-preview";
+        page.entries = new HistoryEntry[] {h1, h2, h3};
+        page.nextCursor = "dev-cursor";
+        page.truncated = true;
+        HistoryTransport.state.accept(page);
+        HistoryFrame.update(HistoryTransport.state.entries());
     }
 
     public static void scheduleScreenshot(String outputPath, int delayTicks, boolean autoExit) {
@@ -209,7 +232,8 @@ public class DevHarness {
         boolean[] ready = {false};
 
         Events.run(EventType.Trigger.uiDrawEnd, () -> {
-            if (!ready[0] || captured[0]) return;
+            if (!ready[0] || captured[0])
+                return;
             captured[0] = true;
 
             try {
@@ -242,13 +266,14 @@ public class DevHarness {
             t.button("Tile History", Icon.book, () -> applyScreen("history")).row();
             t.button("Ban Dialog", Icon.cancel, () -> applyScreen("ban")).row();
             t.button("Auth Dialog", Icon.lock, () -> applyScreen("auth")).row();
-            t.button("Toggle Dock Collapse", Icon.move, () -> ui.windowManager.getDock().toggleCollapse()).row();
+            t.button("Toggle Dock Collapse", Icon.move, () -> ui.windowManager.getDock().toggleCollapse())
+                    .row();
             t.button("Toggle FreeCam HUD", Icon.eye, () -> FreeCamController.get().toggle()).row();
 
             t.button("Capture Screenshot", Icon.save, () -> {
-                String path = "/tmp/admintools_dev_" + System.currentTimeMillis() + ".png";
-                scheduleScreenshot(path, 2, false);
-            }).row();
+                 String path = "/tmp/admintools_dev_" + System.currentTimeMillis() + ".png";
+                 scheduleScreenshot(path, 2, false);
+             }).row();
         });
 
         dialog.addCloseButton();
