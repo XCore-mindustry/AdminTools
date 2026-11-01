@@ -39,7 +39,7 @@ tasks.withType<JavaCompile>().configureEach {
 dependencies {
     compileOnly(toxopid.dependencies.mindustryCore)
     compileOnly(toxopid.dependencies.arcCore)
-    implementation("org.xcore:xcore-protocol-java:0.12.0")
+    implementation("org.xcore:xcore-protocol-java:0.17.0")
     testImplementation(platform("org.junit:junit-bom:6.1.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
