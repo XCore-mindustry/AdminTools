@@ -1,6 +1,13 @@
 name: Build
 
-on: [push, workflow_dispatch]
+on:
+  push:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
 
 jobs:
   buildJar:
@@ -25,9 +32,15 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
     - name: Build mod jar
-      run: ./gradlew build
+      # A release leaves out the dev harness.
+      run: ./gradlew build ${{ github.event_name == 'release' && '-Prelease' || '' }}
     - name: Upload built jar file
       uses: actions/upload-artifact@v7
       with:
         name: ${{ github.event.repository.name }}
         path: build/libs/${{ github.event.repository.name }}.jar
+    - name: Attach jar to the release
+      if: github.event_name == 'release'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: gh release upload "${{ github.event.release.tag_name }}" build/libs/${{ github.event.repository.name }}.jar --clobber
