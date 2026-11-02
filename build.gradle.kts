@@ -21,7 +21,6 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven("https://maven.x-core.org/releases")
-    maven("https://maven.x-core.org/snapshots")
     anukeJitpack()
     anukeZelaux()
 }

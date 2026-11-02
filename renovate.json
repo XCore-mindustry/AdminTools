@@ -1,0 +1,19 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "packageRules": [
+    {
+      "description": "Only XCore's own artifacts for now; other dependencies stay manual.",
+      "matchPackageNames": ["*"],
+      "enabled": false
+    },
+    {
+      "description": "XCore plugin, libraries and protocol, released from XCore-mindustry/xcore.",
+      "matchDatasources": ["maven"],
+      "matchPackageNames": ["org.xcore**", "com.ospx:flubundle"],
+      "registryUrls": ["https://maven.x-core.org/releases"],
+      "enabled": true,
+      "groupName": "xcore core"
+    }
+  ]
+}
